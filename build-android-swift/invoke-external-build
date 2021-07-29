@@ -4,7 +4,7 @@ set -ex
 build_version=4
 package_name=mailcore2-android
 ctemplate_build_version=2.2.3-readdle.2 # tag in https://github.com/readdle/ctemplate
-libetpan_build_version=1.9.3-readdle.2 # tag in https://github.com/readdle/libetpan
+libetpan_build_version=1.9.3-readdle.3 # tag in https://github.com/readdle/libetpan
 cyrus_sasl_build_version=2.1.27 # source code hardcoded in https://github.com/readdle/libetpan/tree/master/build-mac/dependencies/packages
 iconv_build_version=1.15 # version hardcoded in https://github.com/readdle/libetpan/blob/master/build-android/dependencies/iconv/build.sh
 openssl_build_version=swift-toolchain # OpenSSL from swift toolchain
