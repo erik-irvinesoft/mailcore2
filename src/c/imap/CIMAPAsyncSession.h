@@ -74,6 +74,7 @@ extern "C" {
     C_SYNTHESIZE_PROPERTY_DEFINITION(CIMAPAsyncSession, CIMAPNamespace, defaultNamespace, setDefaultNamespace)
     C_SYNTHESIZE_PROPERTY_DEFINITION(CIMAPAsyncSession, CIMAPIdentity, clientIdentity, setClientIdentity)
     C_SYNTHESIZE_PROPERTY_DEFINITION(CIMAPAsyncSession, CIMAPIdentity, serverIdentity, setServerIdentity)
+    C_SYNTHESIZE_PROPERTY_DEFINITION(CIMAPAsyncSession, bool, isQResyncCompatible, setQResyncCompatible)
     
     C_SYNTHESIZE_FUNC_DEFINITION(CIMAPAsyncSession, dispatch_queue_t, dispatchQueue)
     C_SYNTHESIZE_FUNC_DEFINITION(CIMAPAsyncSession, void, setDispatchQueue, dispatch_queue_t)

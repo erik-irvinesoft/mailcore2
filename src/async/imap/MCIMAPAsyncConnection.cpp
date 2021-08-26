@@ -231,6 +231,16 @@ bool IMAPAsyncConnection::isVoIPEnabled()
     return mSession->isVoIPEnabled();
 }
 
+void IMAPAsyncConnection::setQResyncCompatible(bool compatible)
+{
+    mSession->setQResyncCompatible(compatible);
+}
+
+bool IMAPAsyncConnection::isQResyncCompatible()
+{
+    return mSession->isQResyncCompatible();
+}
+
 void IMAPAsyncConnection::setDefaultNamespace(IMAPNamespace * ns)
 {
     mSession->setDefaultNamespace(ns);
