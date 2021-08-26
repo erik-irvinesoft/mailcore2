@@ -65,6 +65,7 @@ IMAPAsyncSession::IMAPAsyncSession()
     mConnectionType = ConnectionTypeClear;
     mCheckCertificateEnabled = true;
     mVoIPEnabled = true;
+    mQResyncCompatible = true;
     mDefaultNamespace = NULL;
     mTimeout = 30.;
     mConnectionLogger = NULL;
@@ -198,6 +199,16 @@ bool IMAPAsyncSession::isVoIPEnabled()
     return mVoIPEnabled;
 }
 
+void IMAPAsyncSession::setQResyncCompatible(bool compatible)
+{
+    mQResyncCompatible = compatible;
+}
+
+bool IMAPAsyncSession::isQResyncCompatible()
+{
+    return mQResyncCompatible;
+}
+
 IMAPNamespace * IMAPAsyncSession::defaultNamespace()
 {
     return mDefaultNamespace;
@@ -280,6 +291,7 @@ IMAPAsyncConnection * IMAPAsyncSession::session()
         session->setAutomaticConfigurationEnabled(false);
     }
 #endif
+    session->setQResyncCompatible(mQResyncCompatible);
 
     return session;
 }

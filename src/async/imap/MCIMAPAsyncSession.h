@@ -82,6 +82,9 @@ namespace mailcore {
         virtual void setVoIPEnabled(bool enabled);
         virtual bool isVoIPEnabled();
         
+        virtual void setQResyncCompatible(bool compatible);
+        virtual bool isQResyncCompatible();
+
         virtual void setDefaultNamespace(IMAPNamespace * ns);
         virtual IMAPNamespace * defaultNamespace();
         
@@ -203,6 +206,7 @@ namespace mailcore {
         ConnectionType mConnectionType;
         bool mCheckCertificateEnabled;
         bool mVoIPEnabled;
+        bool mQResyncCompatible;
         IMAPNamespace * mDefaultNamespace;
         time_t mTimeout;
         bool mAllowsFolderConcurrentAccessEnabled;

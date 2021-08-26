@@ -186,6 +186,11 @@ public class MCOIMAPSession: NSObjectCompat {
         get { return session.isOperationQueueRunning }
     }
     
+    public var qResyncCompatible: Bool {
+        get { return session.isQResyncCompatible }
+        set { session.isQResyncCompatible = newValue }
+    }
+
     /**
      Cancel all operations
      */

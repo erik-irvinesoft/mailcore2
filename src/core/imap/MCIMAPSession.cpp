@@ -374,6 +374,7 @@ void IMAPSession::init()
     mConnectionType = ConnectionTypeClear;
     mCheckCertificateEnabled = true;
     mVoIPEnabled = true;
+    mQResyncCompatible = true;
     mDelimiter = 0;
     
     mBodyProgressEnabled = true;
@@ -541,6 +542,16 @@ void IMAPSession::setVoIPEnabled(bool enabled)
 bool IMAPSession::isVoIPEnabled()
 {
     return mVoIPEnabled;
+}
+
+void IMAPSession::setQResyncCompatible(bool compatible)
+{
+    mQResyncCompatible = compatible;
+}
+
+bool IMAPSession::isQResyncCompatible()
+{
+    return mQResyncCompatible;
 }
 
 String * IMAPSession::loginResponse()
@@ -4273,8 +4284,10 @@ void IMAPSession::applyCapabilities(IndexSet * capabilities)
     if (capabilities->containsIndex(IMAPCapabilityCondstore)) {
         mCondstoreEnabled = true;
     }
-    if (capabilities->containsIndex(IMAPCapabilityQResync)) {
-        mQResyncEnabled = true;
+    if (mQResyncCompatible) {
+        if (capabilities->containsIndex(IMAPCapabilityQResync)) {
+            mQResyncEnabled = true;
+        }
     }
     if (capabilities->containsIndex(IMAPCapabilityXYMHighestModseq)) {
         mXYMHighestModseqEnabled = true;
