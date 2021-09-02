@@ -688,7 +688,7 @@ void IMAPSession::connect(ErrorCode * pError)
         break;
 
         case ConnectionTypeTLS:
-#if defined(_WIN32)  || defined(_WIN64)
+#if _MSC_VER
         r = mailimap_ssl_connect_voip_with_callback(mImap, MCUTF8(mHostname), mPort, isVoIPEnabled(), setMailStreamSSLContextServerName, const_cast<void*>(static_cast<const void*>(MCUTF8(mHostname))));
 #else
         // Passing callback here forces libetpan to skip CFNetwork code branch
