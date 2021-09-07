@@ -8,7 +8,7 @@ if (-Not $InstallPath) {
     $InstallPath = "$ProjectRoot\.build\install"
 }
 
-$PrebuiltMailcoreVersion = 1
+$PrebuiltMailcoreVersion = 2
 $PrebuiltMailcoreArchive = "mailcore2-all-$PrebuiltMailcoreVersion.zip"
 $PrebuiltMailcoreUrl = "https://spark-prebuilt-binaries.s3.amazonaws.com/$PrebuiltMailcoreArchive"
 
