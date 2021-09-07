@@ -24,13 +24,23 @@ Push-Task -Name "mailcore2" -ScriptBlock {
     }
 
     try {
-        $TempFile = [System.IO.Path]::GetTempFileName() + ".zip"
-        Write-Host $TempFile
+        $TempDir = [System.IO.Path]::GetTempFileName()
+        Remove-Item $TempDir
+        
+        $TempFile = "$TempDir.zip"
+        
+        Write-TaskLog "Downloading $PrebuiltMailcoreUrl to $TempFile"
 
         Invoke-RestMethod -Uri $PrebuiltMailcoreUrl -OutFile $TempFile -UserAgent $S3Key
-        Expand-Archive -Path $TempFile -DestinationPath $InstallPath -Force
-
-        Remove-Item $TempFile
+        Expand-Archive -Path $TempFile -DestinationPath $TempDir -Force
+        
+        New-Item -Path $InstallPath -ItemType Directory
+        Get-ChildItem -Path "$TempDir\mailcore2-all" | Copy-Item -Destination $InstallPath -Recurse -Container -PassThru | Write-Host
+        
+        Write-TaskLog "Deleting $TempFile"
+        Remove-Item $TempFile -Force
+        Write-TaskLog "Deleting $TempDir"
+        Remove-Item $TempDir -Force -Recurse
     }
     finally {
         Push-Task -Name "Shutdown" -ScriptBlock {
