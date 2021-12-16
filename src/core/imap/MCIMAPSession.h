@@ -61,6 +61,9 @@ namespace mailcore {
         virtual void setVoIPEnabled(bool enabled);
         virtual bool isVoIPEnabled();
         
+        virtual void setQResyncCompatible(bool compatible);
+        virtual bool isQResyncCompatible();
+
         // Needed for fetchSubscribedFolders() and fetchAllFolders().
         virtual void setDefaultNamespace(IMAPNamespace * ns);
         virtual IMAPNamespace * defaultNamespace();
@@ -277,6 +280,7 @@ namespace mailcore {
         bool mQipServer;
         bool mOutlookServer;
         bool mIdeaImapServer;
+        bool mQResyncCompatible;
         
         unsigned int mLastFetchedSequenceNumber;
         String * mCurrentFolder;

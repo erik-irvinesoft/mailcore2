@@ -69,6 +69,9 @@ namespace mailcore {
         
         virtual void setVoIPEnabled(bool enabled);
         virtual bool isVoIPEnabled();
+
+        virtual void setQResyncCompatible(bool compatible);
+        virtual bool isQResyncCompatible();
         
         virtual void setAutomaticConfigurationEnabled(bool enabled);
         virtual bool isAutomaticConfigurationEnabled();
