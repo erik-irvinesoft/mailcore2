@@ -2,7 +2,6 @@
 
 set -e
 
-export TOOLCHAINS=org.swift.50320190830a
 export SWIFT_ANDROID_ARCH=x86_64
 export EMULATOR_PORT=5559
 export EMULATOR_NAME=ci-test-$EMULATOR_PORT
