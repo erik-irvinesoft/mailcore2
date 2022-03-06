@@ -2,7 +2,6 @@
 
 set -e
 
-export TOOLCHAINS=org.swift.50320190830a
 export SWIFT_ANDROID_ARCH=x86_64
 export EMULATOR_PORT=5559
 export EMULATOR_NAME=ci-test-$EMULATOR_PORT
@@ -31,7 +30,7 @@ else
 fi
 
 # Start emulator
-emulator -no-window -avd $EMULATOR_NAME -noaudio -port $EMULATOR_PORT -partition-size 4000 > /dev/null &
+emulator -no-window -avd $EMULATOR_NAME -noaudio -port $EMULATOR_PORT -partition-size 4000 -timezone America/Los_Angeles > /dev/null &
 
 # Wait until enmulator actually started with timeout 60 sec
 timeout 60 adb wait-for-any-device
@@ -66,8 +65,7 @@ swift-test --deploy \
     $pass_to_frontend -experimental-disable-objc-attr
 
 # Test
-X_ANDROID_TZ="America/Los_Angeles" \
-    swift-test --just-run | tee test.log
+swift-test --just-run | tee test.log
 
 return_code=${PIPESTATUS[0]}
 

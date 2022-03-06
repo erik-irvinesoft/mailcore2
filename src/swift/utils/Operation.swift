@@ -128,7 +128,7 @@ private func tryFinish(_ op: MCOOperation) -> Bool {
     }
     
     scheduled.remove(pointer)
-    _ = unmanaged.release()
+    unmanaged.release()
     
     return true
 }

@@ -16,7 +16,7 @@ private func files(in folder: String, withExtension ext: Set<String>, anchor: St
         .allObjects ?? []
 
     return allFiles
-        .flatMap { $0 as? String }
+        .compactMap { $0 as? String }
         .map { URL(fileURLWithPath: $0) }
         .filter { ext.contains($0.pathExtension) }
         .map { $0.relativePath } 

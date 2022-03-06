@@ -66,34 +66,34 @@ include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE    := dispatch
-LOCAL_EXPORT_C_INCLUDES := $(SWIFT_LIB)
-LOCAL_SRC_FILES := $(SWIFT_LIB)/android/$(ARCH_FOLDER)/libdispatch.so
+LOCAL_EXPORT_C_INCLUDES := $(SWIFT_LIB)-$(ARCH_FOLDER)
+LOCAL_SRC_FILES := $(SWIFT_LIB)-$(ARCH_FOLDER)/android/libdispatch.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE    := blocksRuntime
-LOCAL_EXPORT_C_INCLUDES := $(SWIFT_LIB)
-LOCAL_SRC_FILES := $(SWIFT_LIB)/android/$(ARCH_FOLDER)/libBlocksRuntime.so
+LOCAL_EXPORT_C_INCLUDES := $(SWIFT_LIB)-$(ARCH_FOLDER)
+LOCAL_SRC_FILES := $(SWIFT_LIB)-$(ARCH_FOLDER)/android/libBlocksRuntime.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE    := scuuc
-LOCAL_SRC_FILES := $(SWIFT_LIB)/android/$(ARCH_FOLDER)/libicuucswift.so
+LOCAL_SRC_FILES := $(SWIFT_LIB)-$(ARCH_FOLDER)/android/libicuucswift.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE    := scui18n
-LOCAL_SRC_FILES := $(SWIFT_LIB)/android/$(ARCH_FOLDER)/libicui18nswift.so
+LOCAL_SRC_FILES := $(SWIFT_LIB)-$(ARCH_FOLDER)/android/libicui18nswift.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE    := scudata
-LOCAL_SRC_FILES := $(SWIFT_LIB)/android/$(ARCH_FOLDER)/libicudataswift.so
+LOCAL_SRC_FILES := $(SWIFT_LIB)-$(ARCH_FOLDER)/android/libicudataswift.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE    := xml2
-LOCAL_SRC_FILES := $(SWIFT_LIB)/android/$(ARCH_FOLDER)/libxml2.so
+LOCAL_SRC_FILES := $(SWIFT_LIB)-$(ARCH_FOLDER)/android/libxml2.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -133,11 +133,11 @@ minizip_src_files := \
 LOCAL_MODULE := MailCore
 LOCAL_C_INCLUDES += \
 	$(SWIFT_PM_EXTERNAL_INCLUDE) \
-    $(CTEMPLATE_PATH)/include \
-	$(SWIFT_LIB) \
-    $(LIBETPAN_PATH)/include \
-    $(SWIFT_PM_EXTERNAL_INCLUDE) \
-    $(OPENSSL_PATH)/include \
+	$(CTEMPLATE_PATH)/include \
+	$(SWIFT_LIB)-$(ARCH_FOLDER) \
+	$(LIBETPAN_PATH)/include \
+	$(SWIFT_PM_EXTERNAL_INCLUDE) \
+	$(OPENSSL_PATH)/include \
 	$(addprefix $(src_dir)/, $(subdirs))
 
 LOCAL_SRC_FILES := \
