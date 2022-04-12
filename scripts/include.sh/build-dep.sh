@@ -325,7 +325,12 @@ get_prebuilt_dep()
   mkdir -p "$tempbuilddir"
   cd "$tempbuilddir"
   echo "Downloading $name-$version"
-  curl -O "$url/$name/$name-$version.zip"
+  curl --fail -O "$url/$name/$name-$version.zip"
+  if test x$? != x0 ; then
+    echo failed
+    exit 1
+  fi
+  
   unzip -q "$name-$version.zip"
   rm -rf "$scriptpath/../Externals/$name"
   cd "$name-$version"
