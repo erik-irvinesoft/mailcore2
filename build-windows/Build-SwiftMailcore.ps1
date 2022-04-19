@@ -8,6 +8,7 @@ Param(
 $ProjectRoot = "$(Resolve-Path ""$PSScriptRoot\..\"")"
 
 $SourceFiles = Get-ChildItem -Path "$ProjectRoot\src\swift\*.swift" -Recurse -File 
+$ResourcesPath = "$ProjectRoot\resources"
 
 $ModuleName = "MailCore"
 $IntermediatesPath = "$ProjectRoot\.build\$ModuleName\Intermediates"
@@ -15,6 +16,11 @@ $ProductsPath = "$ProjectRoot\.build\$ModuleName"
 if (-Not $InstallPath) {
     $InstallPath = "$ProjectRoot\.build\install"
 }
+
+$BinDir = "$InstallPath\bin"
+$IncludeDir = "$InstallPath\include"
+$LibDir = "$InstallPath\lib"
+$BundleResourcesDir = "$BinDir\$ModuleName.resources"
 
 $IcuVersion = 67
 $IcuPath = "C:\Library\icu-$IcuVersion\usr"
@@ -75,11 +81,12 @@ Push-Task -Name $ModuleName -ScriptBlock {
 
     if ($Install) {
         Push-Task -Name "Install" -ScriptBlock {
-            Copy-Item -Path "$ProductsPath\MailCore.lib" -Destination "$InstallPath\lib" -Force -ErrorAction Stop
-            Copy-Item -Path "$ProductsPath\MailCore.exp" -Destination "$InstallPath\lib" -Force -ErrorAction Stop
-            Copy-Item -Path "$ProductsPath\MailCore.swiftdoc" -Destination "$InstallPath\include" -Force -ErrorAction Stop
-            Copy-Item -Path "$ProductsPath\MailCore.swiftmodule" -Destination "$InstallPath\include" -Force -ErrorAction Stop
-            Copy-Item -Path "$ProductsPath\MailCore.dll" -Destination "$InstallPath\bin" -Force -ErrorAction Stop
+            Copy-Item -Path "$ProductsPath\$ModuleName.lib" -Destination $LibDir -Force -ErrorAction Stop
+            Copy-Item -Path "$ProductsPath\$ModuleName.exp" -Destination $LibDir -Force -ErrorAction Stop
+            Copy-Item -Path "$ProductsPath\$ModuleName.swiftdoc" -Destination $IncludeDir -Force -ErrorAction Stop
+            Copy-Item -Path "$ProductsPath\$ModuleName.swiftmodule" -Destination $IncludeDir -Force -ErrorAction Stop
+            Copy-Item -Path "$ProductsPath\$ModuleName.dll" -Destination $BinDir -Force -ErrorAction Stop
+            Install-File "$ResourcesPath\providers.json" -Destination $BundleResourcesDir
         }
     }
  
