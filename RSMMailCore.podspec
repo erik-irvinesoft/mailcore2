@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "RSMMailCore"
-  s.version      = "2.1.5.2"
+  s.version      = "2.1.29"
   s.summary      = "SparkCore is absolutely awesome sanctuary of all the messages related business logic of Spark"
   s.description  = <<-DESC
                     Amen
@@ -10,20 +10,20 @@ Pod::Spec.new do |s|
   s.license      = { :type => 'Copyright 2017 Readdle Inc.', :text => 'Copyright 2017 Readdle Inc.' }
 
   s.author       = { "Viktor Gedzenko" => "fox@readdle.com" }
-  s.source       = { :git => "git@github.com:readdle/mailcore2.git", :commit => ""}
-  s.platforms    = { :ios => "9.0", :osx => "10.11" }  
+  s.source       = { :git => "https://github.com/readdle/mailcore2.git", :tag => "2.1.29"}
+  s.platforms    = { :ios => "9.0", :osx => "10.11" }
 
   s.framework  = "Foundation", "Security"
 
-  s.ios.xcconfig = { "HEADER_SEARCH_PATHS" => "\"$(inherited)\" \"$(SDKROOT)/usr/include/libxml2\" \"$(PODS_TARGET_SRCROOT)/Externals/ctemplate-ios/include/\" \"$(PODS_TARGET_SRCROOT)/Externals/include/icu4c/include/\" \"$(PODS_TARGET_SRCROOT)/Externals/libetpan-ios/include/\" \"$(PODS_TARGET_SRCROOT)/Externals/libsasl-ios/include/\" \"$(SDKROOT)/usr/include/\" \"$(PODS_TARGET_SRCROOT)/src/core/basetypes/icu-ucsdet/include/\"",
+  s.ios.xcconfig = { "HEADER_SEARCH_PATHS" => "\"$(PODS_TARGET_SRCROOT)/Externals/ctemplate-ios/include/\" \"$(PODS_TARGET_SRCROOT)/Externals/libetpan-ios/include/\" \"$(PODS_TARGET_SRCROOT)/Externals/libsasl-ios/include/\"",
     "SWIFT_INCLUDE_PATHS" => "\"$(PODS_TARGET_SRCROOT)/build-mac/CMailCore\" \"$(PODS_TARGET_SRCROOT)/Externals/libetpan-ios/include/\"",
-    "OTHER_CPLUSPLUSFLAGS" => "$(inherited) $(OTHER_CFLAGS) -DSWIFT"
+    "OTHER_CPLUSPLUSFLAGS" => "-DSWIFT -DUCHAR_TYPE=uint16_t"
   }
 
 
-  s.osx.xcconfig = { "HEADER_SEARCH_PATHS" => "\"$(inherited)\" \"$(SDKROOT)/usr/include/libxml2\" \"$(PODS_TARGET_SRCROOT)/Externals/ctemplate-osx/include/\" \"$(PODS_TARGET_SRCROOT)/Externals/include/icu4c/include/\" \"$(PODS_TARGET_SRCROOT)/Externals/libetpan-osx/include/\" \"$(PODS_TARGET_SRCROOT)/src/core/basetypes/icu-ucsdet/include/\"",
+  s.osx.xcconfig = { "HEADER_SEARCH_PATHS" => "\"$(PODS_TARGET_SRCROOT)/Externals/ctemplate-osx/include/\" \"$(PODS_TARGET_SRCROOT)/Externals/libetpan-osx/include/\"",
     "SWIFT_INCLUDE_PATHS" => "\"$(PODS_TARGET_SRCROOT)/build-mac/CMailCore\" \"$(PODS_TARGET_SRCROOT)/Externals/libetpan-osx/include/\"",
-    "OTHER_CPLUSPLUSFLAGS" => "$(inherited) $(OTHER_CFLAGS) -DSWIFT"
+    "OTHER_CPLUSPLUSFLAGS" => "-DSWIFT -DUCHAR_TYPE=uint16_t"
   }
 
 
@@ -33,21 +33,21 @@ Pod::Spec.new do |s|
     sed -i '' 's#<tidy/tidy.h>#<rdtidy/tidy.h>#g' ./src/core/basetypes/MCHTMLCleaner.cpp
     sed -i '' 's#<tidy/buffio.h>#<rdtidy/buffio.h>#g' ./src/core/basetypes/MCHTMLCleaner.cpp
     mv src/core/zip/MiniZip/zip.h src/core/zip/MiniZip/rsmmczip.h
-    sed -i '' 's#"zip.h"#"rsmmczip.h"#g' src/core/zip/MCZip.cpp 
-    sed -i '' 's#"zip.h"#"rsmmczip.h"#g' src/core/zip/MiniZip/zip.c  
+    sed -i '' 's#"zip.h"#"rsmmczip.h"#g' src/core/zip/MCZip.cpp
+    sed -i '' 's#"zip.h"#"rsmmczip.h"#g' src/core/zip/MiniZip/zip.c
   CMD
-  
-  s.dependency 'RDTidyHtml5'
-  s.dependency 'RDSQLite3', '3.28.2'
 
-  s.default_subspec = 'core' 
+  s.dependency 'RDTidyHtml5'
+  s.dependency 'RDICU4c'
+
+  s.default_subspec = 'core'
   s.requires_arc = false
 
   s.header_dir = 'MailCore'
   s.libraries = "xml2", "iconv", "z", "resolv", "c++", "objc"
 
   s.module_map = "build-mac/MailCore.modulemap"
-  
+
   s.subspec 'core' do |ss|
     ss.source_files = "src/c/**/*.{h,cpp}",
       "src/core/**/*.{h,cpp,c,mm}",
@@ -57,8 +57,8 @@ Pod::Spec.new do |s|
       "src/swift/**/*.swift",
       "src/MailCore.h",
       "src/AbstractMessageRendererCallbackWrapper.h"
-                   
-    ss.exclude_files = "src/core/zip/MiniZip/iowin32.{h,c}",  
+
+    ss.exclude_files = "src/core/zip/MiniZip/iowin32.{h,c}",
       "src/core/zip/MiniZip/mini*",
       "src/core/zip/MiniZip/mz*",
       "src/core/basetypes/**/*Win32*.cpp",
@@ -66,16 +66,17 @@ Pod::Spec.new do |s|
       "src/core/basetypes/**/*GTK*",
       "src/core/basetypes/MCDataMac.mm",
       "src/core/rfc822/MCMessageParserMac.mm",
-      "src/swift/utils/AndroidShim.swift"
-    
-    ss.public_header_files = 
+      "src/swift/utils/AndroidShim.swift",
+      "src/core/basetypes/icu-ucsdet/**/*"
+
+    ss.public_header_files =
       "src/MailCore.h",
       "src/core/**/**/MC*.h",
       "src/async/**/**/MC*.h",
       "src/c/**/**/C*.h",
       "src/c/basetypes/MailCoreString.h"
 
-    ss.private_header_files =       
+    ss.private_header_files =
       "src/core/basetypes/MCJSONParser.h",
       "src/core/basetypes/MCConnectionLoggerUtils.h",
       "src/core/basetypes/MCLibetpan.h",
@@ -84,10 +85,9 @@ Pod::Spec.new do |s|
       "src/core/zip/MCZipPrivate.h",
       "src/c/CBase+Private.h"
 
-    ss.preserve_paths = 
+    ss.preserve_paths =
       "build-mac/CMailCore/**/*.{h,modulemap}",
-      "build-mac/MailCore.modulemap",
-      "src/core/basetypes/include/unicode/*.h"
+      "build-mac/MailCore.modulemap"
 
     ss.resources = "resources/providers.json"
     ss.dependency "RSMMailCore/etpan"
@@ -95,35 +95,35 @@ Pod::Spec.new do |s|
     ss.dependency "RSMMailCore/sasl2"
   end
 
-  s.subspec 'etpan' do |ss| 
-    ss.ios.vendored_libraries = "Externals/libetpan-ios/lib/libetpan-ios.a"
+  s.subspec 'etpan' do |ss|
+    ss.ios.vendored_frameworks = "Externals/libetpan-ios/lib/libetpan-ios.xcframework"
     ss.ios.private_header_files = "Externals/libetpan-ios/include/libetpan/*.h"
     ss.ios.source_files = "Externals/libetpan-ios/include/libetpan/*.h"
-    ss.ios.preserve_paths = "Externals/libetpan-ios/include/libetpan/*.h"
+    ss.ios.preserve_paths = "Externals/libetpan-ios/include/libetpan/*.h", "Externals/libetpan-ios/lib/**/*"
 
     ss.osx.vendored_libraries = "Externals/libetpan-osx/lib/libetpan.a"
     ss.osx.private_header_files = "Externals/libetpan-osx/include/libetpan/*.h"
     ss.osx.source_files = "Externals/libetpan-osx/include/libetpan/*.h"
     ss.osx.preserve_paths = "Externals/libetpan-osx/include/libetpan/*.h"
-  end 
+  end
 
-  s.subspec 'sasl2' do |ss| 
+  s.subspec 'sasl2' do |ss|
     ss.osx.libraries = "sasl2"
-    ss.ios.vendored_libraries = "Externals/libsasl-ios/lib/libsasl2.a"
+    ss.ios.vendored_frameworks = "Externals/libsasl-ios/lib/sasl.xcframework"
     ss.ios.private_header_files = "Externals/libsasl-ios/include/sasl/*.h"
     ss.ios.source_files = "Externals/libsasl-ios/include/sasl/*.h"
-    ss.ios.preserve_paths = "Externals/libsasl-ios/include/sasl/*.h"
-  end 
+    ss.ios.preserve_paths = "Externals/libsasl-ios/include/sasl/*.h", "Externals/libsasl-ios/lib/**/*"
+  end
 
-  s.subspec 'ctemplate' do |ss| 
-    ss.ios.vendored_libraries = "Externals/ctemplate-ios/lib/libctemplate-ios.a"
+  s.subspec 'ctemplate' do |ss|
+    ss.ios.vendored_frameworks = "Externals/ctemplate-ios/lib/libctemplate-ios.xcframework"
     ss.ios.private_header_files = "Externals/ctemplate-ios/include/ctemplate/*.h"
     ss.ios.source_files = "Externals/ctemplate-ios/include/ctemplate/*.h"
-    ss.ios.preserve_paths = "Externals/ctemplate-ios/include/ctemplate/*.h"
+    ss.ios.preserve_paths = "Externals/ctemplate-ios/include/ctemplate/*.h", "Externals/ctemplate-ios/lib/**/*"
 
     ss.osx.vendored_libraries = "Externals/ctemplate-osx/lib/libctemplate.a"
     ss.osx.private_header_files = "Externals/ctemplate-osx/include/ctemplate/*.h"
     ss.osx.source_files = "Externals/ctemplate-osx/include/ctemplate/*.h"
     ss.osx.preserve_paths = "Externals/ctemplate-osx/include/ctemplate/*.h"
-  end 
+  end
 end
