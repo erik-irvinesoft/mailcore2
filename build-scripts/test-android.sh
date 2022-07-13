@@ -2,17 +2,11 @@
 
 set -e
 
-export SWIFT_ANDROID_ARCH=x86_64
-export EMULATOR_PORT=5559
-export EMULATOR_NAME=ci-test-$EMULATOR_PORT
-export ANDROID_SERIAL=emulator-$EMULATOR_PORT
-export PATH="$PATH:$ANDROID_HOME/emulator/"
-
 function finish {
     exit_code=$?
     set +e
 
-    adb emu kill
+    adb -s $ANDROID_SERIAL emu kill
 
     cat ndk-stack.log
     rm -rf ndk-stack.log
@@ -22,15 +16,10 @@ function finish {
 trap finish EXIT
 
 # Create emulator if needed
-if emulator -list-avds | grep -q $EMULATOR_NAME
-then
-    echo "AVD $EMULATOR_NAME already exist"
-else
-    avdmanager create avd -n $EMULATOR_NAME -k "system-images;android-29;google_apis;x86_64" -d "pixel" --abi google_apis/x86_64
-fi
+$ANDROID_HOME/emulator/emulator -list-avds | grep -q $EMULATOR_NAME && echo "AVD $EMULATOR_NAME already exist" || avdmanager create avd -n $EMULATOR_NAME -k "$EMULATOR_PACKAGE" -d "pixel" --abi $EMULATOR_ABI
 
 # Start emulator
-emulator -no-window -avd $EMULATOR_NAME -noaudio -port $EMULATOR_PORT -partition-size 4000 -timezone America/Los_Angeles > /dev/null &
+$ANDROID_HOME/emulator/emulator -no-window -avd $EMULATOR_NAME -noaudio -port $EMULATOR_PORT -timezone America/Los_Angeles -partition-size 4000 > /dev/null &
 
 # Wait until enmulator actually started with timeout 60 sec
 timeout 60 adb wait-for-any-device
