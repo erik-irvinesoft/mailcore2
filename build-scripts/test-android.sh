@@ -19,7 +19,7 @@ trap finish EXIT
 $ANDROID_HOME/emulator/emulator -list-avds | grep -q $EMULATOR_NAME && echo "AVD $EMULATOR_NAME already exist" || avdmanager create avd -n $EMULATOR_NAME -k "$EMULATOR_PACKAGE" -d "pixel" --abi $EMULATOR_ABI
 
 # Start emulator
-$ANDROID_HOME/emulator/emulator -no-window -avd $EMULATOR_NAME -noaudio -port $EMULATOR_PORT -partition-size 4000 > /dev/null &
+$ANDROID_HOME/emulator/emulator -no-window -avd $EMULATOR_NAME -noaudio -port $EMULATOR_PORT -timezone America/Los_Angeles -partition-size 4000 > /dev/null &
 
 # Wait until enmulator actually started with timeout 60 sec
 timeout 60 adb wait-for-any-device

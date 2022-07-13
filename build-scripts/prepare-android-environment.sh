@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -x
-
 # Create variables
 export TOOLCHAINS=org.swift.540202104261a
 export SWIFT_ANDROID_HOME=$SWIFT_ANDROID_HOME_5_4_R3
