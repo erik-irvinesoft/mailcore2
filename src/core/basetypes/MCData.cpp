@@ -262,6 +262,11 @@ static bool isHintWindowsCharset(String * hintCharset)
            hintCharset->isEqual(MCSTR("winbaltrim"));
 }
 
+static bool isHintCyrillicCharset(String * hintCharset)
+{
+    return hintCharset->hasPrefix(MCSTR("koi8-r"));
+}
+
 static bool isHintCharsetValid(String * hintCharset)
 {
     static MC_LOCK_TYPE lock = MC_LOCK_INITIAL_VALUE;
@@ -532,8 +537,9 @@ String * Data::charsetWithFilteredHTML(bool filterHTML, String * hintCharset)
                     result = hintCharset;
                     break;
                 }
-                if (isHintWindowsCharset(hintCharset) &&
-                    name->isEqual(MCSTR("iso-8859-1"))) {
+                if ((isHintWindowsCharset(hintCharset) ||
+                        isHintCyrillicCharset(hintCharset)) &&
+                        name->isEqual(MCSTR("iso-8859-1"))) {
                     result = hintCharset;
                     break;
                 }
