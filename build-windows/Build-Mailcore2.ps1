@@ -20,7 +20,7 @@ $BinDir = "$InstallPath\bin"
 $IncludeDir = "$InstallPath\include"
 $LibDir = "$InstallPath\lib"
 
-$IcuVersion = 67
+$IcuVersion = 69
 $IcuPath = "C:\Library\icu-$IcuVersion\usr"
 $LibXml2Path = "C:\Library\libxml2-development\usr"
 
