@@ -176,6 +176,7 @@ public class MCOIMAPSession: NSObjectCompat {
     
     public var isVoIPEnabled: Bool {
         get { return session.isVoIPEnabled }
+        set { session.isVoIPEnabled = newValue }
     }
     
     public var isIdleEnabled: Bool {
