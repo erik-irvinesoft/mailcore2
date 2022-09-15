@@ -29,6 +29,7 @@ C_SYNTHESIZE_MAILCORE_OBJ(CIMAPNamespace, CIMAPNamespace_new, setDefaultNamespac
 C_SYNTHESIZE_MAILCORE_OBJ(CIMAPIdentity, CIMAPIdentity_new, setClientIdentity, clientIdentity)
 C_SYNTHESIZE_SCALAR(dispatch_queue_t, dispatch_queue_t, setDispatchQueue, dispatchQueue)
 C_SYNTHESIZE_BOOL(setQResyncCompatible, isQResyncCompatible)
+C_SYNTHESIZE_BOOL(setVoIPEnabled, isVoIPEnabled)
 
 class CIMAPCallbackBridge : public mailcore::Object, public mailcore::ConnectionLogger, public mailcore::OperationQueueCallback {
 public:
@@ -82,7 +83,6 @@ void CIMAPAsyncSession_setConnectionLogger(struct CIMAPAsyncSession self, void* 
 }
 
 C_SYNTHESIZE_FUNC_WITH_OBJ(CIMAPIdentity, serverIdentity)
-C_SYNTHESIZE_FUNC_WITH_SCALAR(bool, isVoIPEnabled)
 C_SYNTHESIZE_FUNC_WITH_SCALAR(bool, isIdleEnabled)
 C_SYNTHESIZE_FUNC_WITH_SCALAR(bool, isOperationQueueRunning)
 C_SYNTHESIZE_FUNC_WITH_VOID(cancelAllOperations)

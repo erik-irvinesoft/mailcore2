@@ -75,12 +75,12 @@ extern "C" {
     C_SYNTHESIZE_PROPERTY_DEFINITION(CIMAPAsyncSession, CIMAPIdentity, clientIdentity, setClientIdentity)
     C_SYNTHESIZE_PROPERTY_DEFINITION(CIMAPAsyncSession, CIMAPIdentity, serverIdentity, setServerIdentity)
     C_SYNTHESIZE_PROPERTY_DEFINITION(CIMAPAsyncSession, bool, isQResyncCompatible, setQResyncCompatible)
+    C_SYNTHESIZE_PROPERTY_DEFINITION(CIMAPAsyncSession, bool, isVoIPEnabled, setVoIPEnabled)
     
     C_SYNTHESIZE_FUNC_DEFINITION(CIMAPAsyncSession, dispatch_queue_t, dispatchQueue)
     C_SYNTHESIZE_FUNC_DEFINITION(CIMAPAsyncSession, void, setDispatchQueue, dispatch_queue_t)
     C_SYNTHESIZE_FUNC_DEFINITION(CIMAPAsyncSession, void, setConnectionLogger, void*)
     
-    C_SYNTHESIZE_READONLY_PROPERTY_DEFINITION(CIMAPAsyncSession, bool, isVoIPEnabled)
     C_SYNTHESIZE_READONLY_PROPERTY_DEFINITION(CIMAPAsyncSession, bool, isIdleEnabled)
     C_SYNTHESIZE_READONLY_PROPERTY_DEFINITION(CIMAPAsyncSession, bool, isOperationQueueRunning)
     
