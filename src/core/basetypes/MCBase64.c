@@ -133,7 +133,7 @@ char * MCDecodeBase64ByLines(const char * in, int len, int * p_outlen) {
         in += 2;
 
     while (in < end) {
-        if (in[0] == 0x0a || in[0] == 0x0d) {
+        if (in[0] == 0x0a || in[0] == 0x0d || in[0] == 0x20) {
             end_of_last_line = output;
             in++;
             continue;
@@ -147,7 +147,7 @@ char * MCDecodeBase64ByLines(const char * in, int len, int * p_outlen) {
         c4 = 0;
 
         while (in < end) {
-            if (in[0] == 0x0a || in[0] == 0x0d) {
+            if (in[0] == 0x0a || in[0] == 0x0d || in[0] == 0x20) {
                 in++;
                 continue;
             }
@@ -157,7 +157,7 @@ char * MCDecodeBase64ByLines(const char * in, int len, int * p_outlen) {
         }
 
         while (in < end) {
-            if (in[0] == 0x0a || in[0] == 0x0d) {
+            if (in[0] == 0x0a || in[0] == 0x0d || in[0] == 0x20) {
                 in++;
                 continue;
             }
@@ -167,7 +167,7 @@ char * MCDecodeBase64ByLines(const char * in, int len, int * p_outlen) {
         }
 
         while (in < end) {
-            if (in[0] == 0x0a || in[0] == 0x0d) {
+            if (in[0] == 0x0a || in[0] == 0x0d || in[0] == 0x20) {
                 in++;
                 continue;
             }
