@@ -133,16 +133,20 @@ char * MCDecodeBase64ByLines(const char * in, int len, int * p_outlen) {
         in += 2;
 
     int isEOL = 0;
+    int haveLeadingWhitespaces = 0;
     
     while (in < end) {
         
-        if (isEOL && in[0] == 0x20) {
+        while (isEOL && in < end && in[0] == 0x20) {
             in++;
-            isEOL = 0;
-            continue;
+            haveLeadingWhitespaces = 1;
         }
 
-        isEOL = 0;
+        if (isEOL && haveLeadingWhitespaces) {
+            isEOL = 0;
+            haveLeadingWhitespaces = 0;
+            continue;
+        }
         
         if (in[0] == 0x0a || in[0] == 0x0d) {
             end_of_last_line = output;
@@ -160,13 +164,16 @@ char * MCDecodeBase64ByLines(const char * in, int len, int * p_outlen) {
 
         while (in < end) {
             
-            if (isEOL && in[0] == 0x20) {
+            while (isEOL && in < end && in[0] == 0x20) {
                 in++;
-                isEOL = 0;
-                continue;
+                haveLeadingWhitespaces = 1;
             }
 
-            isEOL = 0;
+            if (isEOL && haveLeadingWhitespaces) {
+                isEOL = 0;
+                haveLeadingWhitespaces = 0;
+                continue;
+            }
             
             if (in[0] == 0x0a || in[0] == 0x0d) {
                 isEOL = 1;
@@ -180,13 +187,16 @@ char * MCDecodeBase64ByLines(const char * in, int len, int * p_outlen) {
 
         while (in < end) {
             
-            if (isEOL && in[0] == 0x20) {
+            while (isEOL && in < end && in[0] == 0x20) {
                 in++;
-                isEOL = 0;
-                continue;
+                haveLeadingWhitespaces = 1;
             }
 
-            isEOL = 0;
+            if (isEOL && haveLeadingWhitespaces) {
+                isEOL = 0;
+                haveLeadingWhitespaces = 0;
+                continue;
+            }
             
             if (in[0] == 0x0a || in[0] == 0x0d) {
                 isEOL = 1;
@@ -200,13 +210,16 @@ char * MCDecodeBase64ByLines(const char * in, int len, int * p_outlen) {
 
         while (in < end) {
             
-            if (isEOL && in[0] == 0x20) {
+            while (isEOL && in < end && in[0] == 0x20) {
                 in++;
-                isEOL = 0;
-                continue;
+                haveLeadingWhitespaces = 1;
             }
 
-            isEOL = 0;
+            if (isEOL && haveLeadingWhitespaces) {
+                isEOL = 0;
+                haveLeadingWhitespaces = 0;
+                continue;
+            }
             
             if (in[0] == 0x0a || in[0] == 0x0d) {
                 isEOL = 1;
