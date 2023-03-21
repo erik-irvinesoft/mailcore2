@@ -132,9 +132,23 @@ char * MCDecodeBase64ByLines(const char * in, int len, int * p_outlen) {
     if (in[0] == '+' && in[1] == ' ')
         in += 2;
 
+    int isEOL = 0;
+    
     while (in < end) {
-        if (in[0] == 0x0a || in[0] == 0x0d || in[0] == 0x20) {
+        
+        while (isEOL && in < end && in[0] == 0x20) {
+            in++;
+        }
+        
+        isEOL = 0;
+        
+        if (in == end) {
+            break;
+        }
+        
+        if (in[0] == 0x0a || in[0] == 0x0d) {
             end_of_last_line = output;
+            isEOL = 1;
             in++;
             continue;
         }
@@ -147,7 +161,19 @@ char * MCDecodeBase64ByLines(const char * in, int len, int * p_outlen) {
         c4 = 0;
 
         while (in < end) {
-            if (in[0] == 0x0a || in[0] == 0x0d || in[0] == 0x20) {
+            
+            while (isEOL && in < end && in[0] == 0x20) {
+                in++;
+            }
+            
+            isEOL = 0;
+            
+            if (in == end) {
+                break;
+            }
+            
+            if (in[0] == 0x0a || in[0] == 0x0d) {
+                isEOL = 1;
                 in++;
                 continue;
             }
@@ -157,7 +183,19 @@ char * MCDecodeBase64ByLines(const char * in, int len, int * p_outlen) {
         }
 
         while (in < end) {
-            if (in[0] == 0x0a || in[0] == 0x0d || in[0] == 0x20) {
+            
+            while (isEOL && in < end && in[0] == 0x20) {
+                in++;
+            }
+            
+            isEOL = 0;
+            
+            if (in == end) {
+                break;
+            }
+            
+            if (in[0] == 0x0a || in[0] == 0x0d) {
+                isEOL = 1;
                 in++;
                 continue;
             }
@@ -167,7 +205,19 @@ char * MCDecodeBase64ByLines(const char * in, int len, int * p_outlen) {
         }
 
         while (in < end) {
-            if (in[0] == 0x0a || in[0] == 0x0d || in[0] == 0x20) {
+            
+            while (isEOL && in < end && in[0] == 0x20) {
+                in++;
+            }
+            
+            isEOL = 0;
+            
+            if (in == end) {
+                break;
+            }
+            
+            if (in[0] == 0x0a || in[0] == 0x0d) {
+                isEOL = 1;
                 in++;
                 continue;
             }
