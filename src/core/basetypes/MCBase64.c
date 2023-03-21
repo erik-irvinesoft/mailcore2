@@ -133,19 +133,17 @@ char * MCDecodeBase64ByLines(const char * in, int len, int * p_outlen) {
         in += 2;
 
     int isEOL = 0;
-    int haveLeadingWhitespaces = 0;
     
     while (in < end) {
         
         while (isEOL && in < end && in[0] == 0x20) {
             in++;
-            haveLeadingWhitespaces = 1;
         }
-
-        if (isEOL && haveLeadingWhitespaces) {
-            isEOL = 0;
-            haveLeadingWhitespaces = 0;
-            continue;
+        
+        isEOL = 0;
+        
+        if (in == end) {
+            break;
         }
         
         if (in[0] == 0x0a || in[0] == 0x0d) {
@@ -166,13 +164,12 @@ char * MCDecodeBase64ByLines(const char * in, int len, int * p_outlen) {
             
             while (isEOL && in < end && in[0] == 0x20) {
                 in++;
-                haveLeadingWhitespaces = 1;
             }
-
-            if (isEOL && haveLeadingWhitespaces) {
-                isEOL = 0;
-                haveLeadingWhitespaces = 0;
-                continue;
+            
+            isEOL = 0;
+            
+            if (in == end) {
+                break;
             }
             
             if (in[0] == 0x0a || in[0] == 0x0d) {
@@ -189,13 +186,12 @@ char * MCDecodeBase64ByLines(const char * in, int len, int * p_outlen) {
             
             while (isEOL && in < end && in[0] == 0x20) {
                 in++;
-                haveLeadingWhitespaces = 1;
             }
-
-            if (isEOL && haveLeadingWhitespaces) {
-                isEOL = 0;
-                haveLeadingWhitespaces = 0;
-                continue;
+            
+            isEOL = 0;
+            
+            if (in == end) {
+                break;
             }
             
             if (in[0] == 0x0a || in[0] == 0x0d) {
@@ -212,13 +208,12 @@ char * MCDecodeBase64ByLines(const char * in, int len, int * p_outlen) {
             
             while (isEOL && in < end && in[0] == 0x20) {
                 in++;
-                haveLeadingWhitespaces = 1;
             }
-
-            if (isEOL && haveLeadingWhitespaces) {
-                isEOL = 0;
-                haveLeadingWhitespaces = 0;
-                continue;
+            
+            isEOL = 0;
+            
+            if (in == end) {
+                break;
             }
             
             if (in[0] == 0x0a || in[0] == 0x0d) {
