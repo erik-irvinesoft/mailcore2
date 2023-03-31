@@ -1,16 +1,14 @@
 Pod::Spec.new do |s|
   s.name         = "RSMMailCore"
-  s.version      = "2.1.29"
-  s.summary      = "SparkCore is absolutely awesome sanctuary of all the messages related business logic of Spark"
-  s.description  = <<-DESC
-                    Amen
-                   DESC
+  s.version      = "2.1.36"
+  s.summary      = "Mailcore 2"
+  s.description  = "MailCore 2 provide a simple and asynchronous API to work with e-mail protocols IMAP, POP and SMTP. The API has been redesigned from ground up."
 
-  s.homepage = 'https://github.com/readdle/mailcore2' 
+  s.homepage     = 'https://github.com/readdle/mailcore2.git'
   s.license      = { :type => 'Copyright 2017 Readdle Inc.', :text => 'Copyright 2017 Readdle Inc.' }
 
   s.author       = { "Viktor Gedzenko" => "fox@readdle.com" }
-  s.source       = { :git => "https://github.com/readdle/mailcore2.git", :tag => "2.1.29"}
+  s.source       = { :git => "https://github.com/readdle/mailcore2.git", :tag => "2.1.36"}
   s.platforms    = { :ios => "9.0", :osx => "10.11" }
 
   s.framework  = "Foundation", "Security"
