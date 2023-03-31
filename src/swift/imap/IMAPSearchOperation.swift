@@ -17,9 +17,7 @@ public class MCOIMAPSearchOperation : MCOIMAPBaseOperation {
 
 	deinit {
         self.operation.release()
-        lock.lock()
         completionBlock = nil
-        lock.unlock()
 	}
     
     /**
