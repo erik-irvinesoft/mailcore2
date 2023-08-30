@@ -78,17 +78,17 @@ include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE    := scuuc
-LOCAL_SRC_FILES := $(SWIFT_LIB)-$(ARCH_FOLDER)/android/libicuucswift.so
+LOCAL_SRC_FILES := $(SWIFT_LIB)-$(ARCH_FOLDER)/android/libicuuc.$(SWIFT_ANDROID_ICU_VERSION).so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE    := scui18n
-LOCAL_SRC_FILES := $(SWIFT_LIB)-$(ARCH_FOLDER)/android/libicui18nswift.so
+LOCAL_SRC_FILES := $(SWIFT_LIB)-$(ARCH_FOLDER)/android/libicui18n.$(SWIFT_ANDROID_ICU_VERSION).so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE    := scudata
-LOCAL_SRC_FILES := $(SWIFT_LIB)-$(ARCH_FOLDER)/android/libicudataswift.so
+LOCAL_SRC_FILES := $(SWIFT_LIB)-$(ARCH_FOLDER)/android/libicudata.$(SWIFT_ANDROID_ICU_VERSION).so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
