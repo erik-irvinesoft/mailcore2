@@ -30,6 +30,7 @@ $LibEtPanDependencyDir = "LibEtPan"
 $LibEtPanDependencyPath = "$DependenciesPath\$LibEtPanDependencyDir"
 $TidyDependencyDir = "TidyHTML5"
 $TidyDependencyPath = "$DependenciesPath\$TidyDependencyDir"
+$ZlibDependencySourceUrl = "https://spark-prebuilt-binaries.s3.amazonaws.com/zlib.zip"
 $ZlibDependencyDir = "zlib"
 $ZlibDependencyPath = "$DependenciesPath\$ZlibDependencyDir\zlib-win32-1"
 $SaslDependencySourceUrl = "https://spark-prebuilt-binaries.s3.amazonaws.com/sasl.zip"
@@ -45,8 +46,6 @@ if (!$S3Key) {
 }
 
 $Dependencies = @(
-    @{ Name = "zlib"; WebUrl = "http://d.etpan.org/mailcore2-deps/zlib-win32/zlib-win32-1.zip"; Directory = $ZlibDependencyDir; }
-    
     @{ Name = "CTemplate"; GitUrl = "git@github.com:readdle/ctemplate.git"; GitBranch = "master"; Directory = $CTemplateDependencyDir; }
     @{ Name = "LibEtPan"; GitUrl = "git@github.com:readdle/libetpan.git"; GitRevision = "280a11f4250d67c1c6f74210ae9b1dfe4fadd248"; Directory = $LibEtPanDependencyDir; }
     @{ Name = "Tidy HTML5"; GitUrl = "git@github.com:readdle/tidy-html5.git"; GitBranch = "spark2"; Directory = $TidyDependencyDir; }
@@ -62,9 +61,11 @@ Push-Task -Name "mailcore2" -ScriptBlock {
         Initialize-Dependencies -Path $Script:DependenciesPath -Dependencies $Script:Dependencies
         Invoke-RestMethod -Uri $OpenSslDependencySourceUrl -OutFile "$DependenciesPath\OpenSsl.zip" -UserAgent $S3Key
         Invoke-RestMethod -Uri $SaslDependencySourceUrl -OutFile "$DependenciesPath\SASL.zip" -UserAgent $S3Key
+        Invoke-RestMethod -Uri $ZlibDependencySourceUrl -OutFile "$DependenciesPath\zlib.zip" -UserAgent $S3Key
         Expand-Archive -Path "$DependenciesPath\OpenSsl.zip" -DestinationPath $OpenSslDependencyPath -Force
         Expand-Archive -Path "$DependenciesPath\SASL.zip" -DestinationPath $SaslDependencyPath -Force
-
+        Expand-Archive -Path "$DependenciesPath\zlib.zip" -DestinationPath $ZlibDependencyPath -Force
+        
         Push-Task -Name "Prepare Build Environment" -ScriptBlock {
             Test-Directory $IcuPath -SuccessMessage "Found ICU at $IcuPath" -FailMessage "ICU not found at $IcuPath"
             Test-Directory $LibXml2Path -SuccessMessage "Found LibXml2 at $LibXml2Path" -FailMessage "ICU not found at $LibXml2Path"
