@@ -17,7 +17,7 @@
 #include <unicode/ucsdet.h>
 #endif
 #include <libetpan/libetpan.h>
-#if __APPLE__
+#if 0 // temporary disable iconv
 #include <iconv.h>
 #include <CoreFoundation/CoreFoundation.h>
 #endif
@@ -688,7 +688,7 @@ ErrorCode Data::writeToFile(String * filename)
     return ErrorNone;
 }
 
-#if __APPLE__
+#if 0 // temporary disable iconv
 static CFStringEncoding encodingFromCString(const char * charset)
 {
     CFStringEncoding encoding;
@@ -870,7 +870,7 @@ static int lepMixedConv(const char * tocode, const char * fromcode,
 }
 #endif
 
-#if defined(__ANDROID__) || defined(ANDROID) || defined(_WIN32)  || defined(_WIN64)
+#if __APPLE__ || defined(__ANDROID__) || defined(ANDROID) || defined(_WIN32)  || defined(_WIN64)
 
 static int lepMixedConv(const char * tocode, const char * fromcode,
                         const char * str, size_t length,
