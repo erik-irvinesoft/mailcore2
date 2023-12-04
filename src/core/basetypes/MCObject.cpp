@@ -27,6 +27,7 @@
 #if defined(ANDROID) || defined(__ANDROID__)
 // TODO: remove when swift toolchain updated to 15c
 #include <string>
+#include <assert.h>
 #endif
 
 using namespace mailcore;
