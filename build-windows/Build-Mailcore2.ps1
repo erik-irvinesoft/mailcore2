@@ -146,7 +146,6 @@ Push-Task -Name "mailcore2" -ScriptBlock {
             Copy-Item -Path "$LibEtPanDependencyPath\build-windows\x64\Release\*" -Destination "$ExternalsPath\lib64" -Exclude "*.dll" -Recurse -Force -ErrorAction Stop -PassThru | Write-Host
             Copy-Item -Path "$TidyDependencyPath\include" -Destination "$ExternalsPath\include\tidy" -Recurse -Force -ErrorAction Stop -PassThru | Write-Host
             Copy-Item -Path "$TidyDependencyPath\rdtidy.lib" -Destination "$ExternalsPath\lib64" -Force -ErrorAction Stop -PassThru | Write-Host
-            Copy-Item -Path "$TidyDependencyPath\rdtidy.exp" -Destination "$ExternalsPath\lib64" -Force -ErrorAction Stop -PassThru | Write-Host
 
             Copy-Item -Path "$ProjectRoot\build-windows\vs\ctemplate\include\template_cache.h" -Destination "$ExternalsPath\include\ctemplate" -Force -ErrorAction Stop | Write-Host
             Copy-Item -Path "$ProjectRoot\build-windows\vs\ctemplate\include\template_string.h" -Destination "$ExternalsPath\include\ctemplate" -Force -ErrorAction Stop | Write-Host
@@ -173,7 +172,6 @@ Push-Task -Name "mailcore2" -ScriptBlock {
                 Install-File "$ZlibDependencyPath\include\zlib.h" -Destination $IncludeDir
                 Install-File "$ZlibDependencyPath\include\zconf.h" -Destination $IncludeDir
                 Install-File "$ZlibDependencyPath\lib64\zlib.lib" -Destination $LibDir
-                Install-File "$ZlibDependencyPath\lib64\zlib.exp" -Destination $LibDir
 
                 Install-File "$TidyDependencyPath\bin\rdtidy.dll" -Destination $BinDir
                 Install-File "$TidyDependencyPath\bin\rdtidy.pdb" -Destination $BinDir
@@ -183,13 +181,11 @@ Push-Task -Name "mailcore2" -ScriptBlock {
                 Install-File "$TidyDependencyPath\include\tidybuffio.h" -Destination "$IncludeDir\tidy"
                 Install-File "$TidyDependencyPath\include\tidyenum.h" -Destination "$IncludeDir\tidy"
                 Install-File "$TidyDependencyPath\include\tidyplatform.h" -Destination "$IncludeDir\tidy"
-                Install-File "$TidyDependencyPath\rdtidy.exp" -Destination $LibDir
                 Install-File "$TidyDependencyPath\lib\rdtidy.lib" -Destination $LibDir
                 
                 Install-Directory "$LibEtPanDependencyPath\build-windows\include\libetpan" -Destination "$IncludeDir\libetpan"
                 Install-File "$LibEtPanDependencyPath\build-windows\x64\Release\libetpan.dll" -Destination $BinDir
                 Install-File "$LibEtPanDependencyPath\build-windows\x64\Release\libetpan.pdb" -Destination $BinDir
-                Install-File "$LibEtPanDependencyPath\build-windows\x64\Release\libetpan.exp" -Destination $LibDir
                 Install-File "$LibEtPanDependencyPath\build-windows\x64\Release\libetpan.lib" -Destination $LibDir
             }
         }

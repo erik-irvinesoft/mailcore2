@@ -80,7 +80,6 @@ Push-Task -Name $ModuleName -ScriptBlock {
     if ($Install) {
         Push-Task -Name "Install" -ScriptBlock {
             Copy-Item -Path "$ProductsPath\$ModuleName.lib" -Destination $LibDir -Force -ErrorAction Stop
-            Copy-Item -Path "$ProductsPath\$ModuleName.exp" -Destination $LibDir -Force -ErrorAction Stop
             Copy-Item -Path "$ProductsPath\$ModuleName.swiftdoc" -Destination $IncludeDir -Force -ErrorAction Stop
             Copy-Item -Path "$ProductsPath\$ModuleName.swiftmodule" -Destination $IncludeDir -Force -ErrorAction Stop
             Copy-Item -Path "$ProductsPath\$ModuleName.dll" -Destination $BinDir -Force -ErrorAction Stop
