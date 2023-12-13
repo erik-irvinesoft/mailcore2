@@ -20,9 +20,12 @@ $BinDir = "$InstallPath\bin"
 $IncludeDir = "$InstallPath\include"
 $LibDir = "$InstallPath\lib"
 
-$IcuVersion = 69
+$IcuVersionMajor = "69"
+$IcuVersion = "$IcuVersionMajor.1"
+$LibXml2Version = "2.9.12"
 $IcuPath = "C:\Library\icu-$IcuVersion\usr"
-$LibXml2Path = "C:\Library\libxml2-development\usr"
+$LibXml2Path = "C:\Library\libxml2-$LibXml2Version\usr"
+$SwiftSDKPath = "C:\Library\Developer\Platforms\Windows.platform\Developer\SDKs\Windows.sdk"
 
 $CTemplateDependencyDir = "CTemplate"
 $CTemplateDependencyPath = "$DependenciesPath\$CTemplateDependencyDir"
@@ -196,14 +199,14 @@ Push-Task -Name "mailcore2" -ScriptBlock {
                 $(if ($Install) { "-DCMAKE_PDB_OUTPUT_DIRECTORY=$InstallPath\bin"} else { "" }),
                 "-DCMAKE_C_COMPILER=clang-cl.exe",
                 "-DCMAKE_CXX_COMPILER=clang-cl.exe",
-                "-DLIBXML_INCLUDE_DIR=C:\Library\libxml2-development\usr\include",
-                "-DLIBXML_LIBRARY=C:\Library\libxml2-development\usr\lib\libxml2s.lib",
+                "-DLIBXML_INCLUDE_DIR=$LibXml2Path\include",
+                "-DLIBXML_LIBRARY=$LibXml2Path\lib\libxml2s.lib",
                 "-DICU4C_INCLUDE_DIR=$IcuPath\include",
-                "-DICU4C_UC_LIBRARY=$IcuPath\lib\icuuc$IcuVersion.lib",
-                "-DICU4C_IN_LIBRARY=$IcuPath\lib\icuin$IcuVersion.lib",
-                "-DDISPATCH_INCLUDE_DIR=C:\Library\Developer\Platforms\Windows.platform\Developer\SDKs\Windows.sdk\usr\lib\swift",
-                "-DDISPATCH_LIBRARY=C:\Library\Developer\Platforms\Windows.platform\Developer\SDKs\Windows.sdk\usr\lib\swift\windows\dispatch.lib",
-                "-DDISPATCH_BLOCKS_LIBRARY=C:\Library\Developer\Platforms\Windows.platform\Developer\SDKs\Windows.sdk\usr\lib\swift\windows\BlocksRuntime.lib" -join " "
+                "-DICU4C_UC_LIBRARY=$IcuPath\lib\icuuc$IcuVersionMajor.lib",
+                "-DICU4C_IN_LIBRARY=$IcuPath\lib\icuin$IcuVersionMajor.lib",
+                "-DDISPATCH_INCLUDE_DIR=$SwiftSDKPath\usr\include",
+                "-DDISPATCH_LIBRARY=$SwiftSDKPath\usr\lib\swift\windows\x86_64\dispatch.lib",
+                "-DDISPATCH_BLOCKS_LIBRARY=$SwiftSDKPath\usr\lib\swift\windows\x86_64\BlocksRuntime.lib" -join " "
 
             Invoke-CMakeTasks -WorkingDir "$ProjectRoot\.build\mailcore2" -CMakeArgs $CMakeArgs -NoInstall:$(-not $Install)
         }

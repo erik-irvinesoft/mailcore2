@@ -22,8 +22,11 @@ $IncludeDir = "$InstallPath\include"
 $LibDir = "$InstallPath\lib"
 $BundleResourcesDir = "$BinDir\$ModuleName.resources"
 
-$IcuVersion = 69
+$IcuVersionMajor = "69"
+$IcuVersion = "$IcuVersionMajor.1"
+$LibXml2Version = "2.9.12"
 $IcuPath = "C:\Library\icu-$IcuVersion\usr"
+$LibXml2Path = "C:\Library\libxml2-$LibXml2Version\usr"
 
 $SwiftIncludePaths = 
     "$InstallPath\include"
