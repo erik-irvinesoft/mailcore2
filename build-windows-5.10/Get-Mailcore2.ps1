@@ -8,7 +8,7 @@ if (-Not $InstallPath) {
     $InstallPath = "$ProjectRoot\.build\install"
 }
 
-$PrebuiltMailcoreVersion = 2
+$PrebuiltMailcoreVersion = 3
 $PrebuiltMailcoreArchive = "mailcore2-all-$PrebuiltMailcoreVersion.zip"
 $PrebuiltMailcoreUrl = "https://spark-prebuilt-binaries.s3.amazonaws.com/$PrebuiltMailcoreArchive"
 
@@ -32,10 +32,13 @@ Push-Task -Name "mailcore2" -ScriptBlock {
         Write-TaskLog "Downloading $PrebuiltMailcoreUrl to $TempFile"
 
         Invoke-RestMethod -Uri $PrebuiltMailcoreUrl -OutFile $TempFile -UserAgent $S3Key
-        Expand-Archive -Path $TempFile -DestinationPath $TempDir -Force
+        Remove-Item $TempDir -Force -Recurse -ErrorAction Ignore
+        New-Item -ItemType Directory $TempDir
+        Write-TaskLog "Extracting $TempFile to $TempDir"
+        tar -C "$TempDir" -xf "$TempFile"
         
-        New-Item -Path $InstallPath -ItemType Directory
-        Get-ChildItem -Path "$TempDir\mailcore2-all" | Copy-Item -Destination $InstallPath -Recurse -Container -PassThru | Write-Host
+        New-Item -Path $InstallPath -ItemType Directory -ErrorAction Ignore
+        Get-ChildItem -Path "$TempDir\mailcore2-all" | Copy-Item -Destination $InstallPath -Recurse -Container -PassThru -Force | Write-Host
         
         Write-TaskLog "Deleting $TempFile"
         Remove-Item $TempFile -Force
