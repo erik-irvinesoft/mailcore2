@@ -38,6 +38,7 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 elseif(WIN32)
   set(CMAKE_CXX_STANDARD 11)
   add_compile_definitions(_HAS_CONDITIONAL_EXPLICIT=0)
+  add_compile_definitions(LIBXML_STATIC)
   set(BUILD_SHARED_LIBS ON)
   set(additional_includes
     "${CMAKE_CURRENT_SOURCE_DIR}/Externals/include"
