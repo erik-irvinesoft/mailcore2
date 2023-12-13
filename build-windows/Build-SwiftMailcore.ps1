@@ -67,7 +67,7 @@ $Configuration = @{
 
 Push-Task -Name $ModuleName -ScriptBlock {
     Push-Task -Name "Initialize" -ScriptBlock {
-        Invoke-VsDevCmd -Version "2019"
+        Invoke-VsDevCmd -Version "2022"
 
         Initialize-SDK
         Initialize-Toolchain

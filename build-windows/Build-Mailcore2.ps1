@@ -74,7 +74,7 @@ Push-Task -Name "mailcore2" -ScriptBlock {
             Test-Directory $LibXml2Path -SuccessMessage "Found LibXml2 at $LibXml2Path" -FailMessage "ICU not found at $LibXml2Path"
 
             Write-TaskLog "Configuring VS environment"
-            Invoke-VsDevCmd -Version "2019"
+            Invoke-VsDevCmd -Version "2022"
             Initialize-Toolchain
 
             Test-VCModules
