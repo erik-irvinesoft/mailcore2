@@ -34,8 +34,8 @@ Push-Task -Name "mailcore2" -ScriptBlock {
         Invoke-RestMethod -Uri $PrebuiltMailcoreUrl -OutFile $TempFile -UserAgent $S3Key
         Expand-Archive -Path $TempFile -DestinationPath $TempDir -Force
         
-        New-Item -Path $InstallPath -ItemType Directory
-        Get-ChildItem -Path "$TempDir\mailcore2-all" | Copy-Item -Destination $InstallPath -Recurse -Container -PassThru | Write-Host
+        New-Item -Path $InstallPath -ItemType Directory -ErrorAction Ignore
+        Get-ChildItem -Path "$TempDir\mailcore2-all" | Copy-Item -Destination $InstallPath -Recurse -Container -PassThru -Force | Write-Host
         
         Write-TaskLog "Deleting $TempFile"
         Remove-Item $TempFile -Force
