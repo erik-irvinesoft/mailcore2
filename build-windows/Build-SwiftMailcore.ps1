@@ -24,7 +24,7 @@ $BundleResourcesDir = "$BinDir\$ModuleName.resources"
 
 $IcuVersionMajor = "69"
 $IcuVersion = "$IcuVersionMajor.1"
-$LibXml2Version = "2.9.12"
+$LibXml2Version = "2.11.5"
 $IcuPath = "C:\Library\icu-$IcuVersion\usr"
 $LibXml2Path = "C:\Library\libxml2-$LibXml2Version\usr"
 
@@ -40,9 +40,6 @@ $LibrarySearchPaths =
     "$InstallPath\lib"
 
 $Configuration = @{
-    ToolchainPath = "C:\Library\Developer\Toolchains\unknown-Asserts-development.xctoolchain"
-    SDKPath = "C:\Library\Developer\Platforms\Windows.platform\Developer\SDKs\Windows.sdk"
-    
     ModuleName = $ModuleName
 
     WorkPath = $ProjectRoot
@@ -61,8 +58,6 @@ $Configuration = @{
     SourceFiles = $SourceFiles
 
     Libraries = "libetpan"
-    OtherCFlags = @()
-    # OtherSwiftFlags = "-DDEBUG"
 }
 
 Push-Task -Name $ModuleName -ScriptBlock {

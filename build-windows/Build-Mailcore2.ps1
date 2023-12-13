@@ -22,10 +22,9 @@ $LibDir = "$InstallPath\lib"
 
 $IcuVersionMajor = "69"
 $IcuVersion = "$IcuVersionMajor.1"
-$LibXml2Version = "2.9.12"
+$LibXml2Version = "2.11.5"
 $IcuPath = "C:\Library\icu-$IcuVersion\usr"
 $LibXml2Path = "C:\Library\libxml2-$LibXml2Version\usr"
-$SwiftSDKPath = "C:\Library\Developer\Platforms\Windows.platform\Developer\SDKs\Windows.sdk"
 
 $CTemplateDependencyDir = "CTemplate"
 $CTemplateDependencyPath = "$DependenciesPath\$CTemplateDependencyDir"
@@ -50,7 +49,7 @@ if (!$S3Key) {
 
 $Dependencies = @(
     @{ Name = "CTemplate"; GitUrl = "git@github.com:readdle/ctemplate.git"; GitBranch = "master"; Directory = $CTemplateDependencyDir; }
-    @{ Name = "LibEtPan"; GitUrl = "git@github.com:readdle/libetpan.git"; GitRevision = "280a11f4250d67c1c6f74210ae9b1dfe4fadd248"; Directory = $LibEtPanDependencyDir; }
+    @{ Name = "LibEtPan"; GitUrl = "git@github.com:readdle/libetpan.git"; GitRevision = "master"; Directory = $LibEtPanDependencyDir; }
     @{ Name = "Tidy HTML5"; GitUrl = "git@github.com:readdle/tidy-html5.git"; GitBranch = "spark2"; Directory = $TidyDependencyDir; }
 )
 
@@ -61,6 +60,12 @@ Push-Task -Name "mailcore2" -ScriptBlock {
     }
 
     try {
+        $SwiftSDKPath = $Env:SDKROOT
+        if (-not (Test-Path $SwiftSDKPath)) {
+            throw "SDK path is not set or invalid. Make sure you have SDKROOT environment variable specified correctly."
+        }
+        Write-TaskLog "Found Swift SDK: $SwiftSDKPath"
+
         Initialize-Dependencies -Path $Script:DependenciesPath -Dependencies $Script:Dependencies
         Invoke-RestMethod -Uri $OpenSslDependencySourceUrl -OutFile "$DependenciesPath\OpenSsl.zip" -UserAgent $S3Key
         Invoke-RestMethod -Uri $SaslDependencySourceUrl -OutFile "$DependenciesPath\SASL.zip" -UserAgent $S3Key
@@ -76,8 +81,6 @@ Push-Task -Name "mailcore2" -ScriptBlock {
             Write-TaskLog "Configuring VS environment"
             Invoke-VsDevCmd -Version "2022"
             Initialize-Toolchain
-
-            Test-VCModules
         }
 
         Push-Task -Name "Build Tidy HTML5" -ScriptBlock {
@@ -93,7 +96,7 @@ Push-Task -Name "mailcore2" -ScriptBlock {
         }
 
         Push-Task -Name "Setup LibEtPan Dependencies" -ScriptBlock {
-            Copy-Item "$ProjectRoot\build-windows\vs2019\libetpan\libetpan.vcxproj" -Destination "$LibEtPanDependencyPath\build-windows\libetpan" -Force -ErrorAction Stop
+            Copy-Item "$ProjectRoot\build-windows\vs\libetpan\libetpan.vcxproj" -Destination "$LibEtPanDependencyPath\build-windows\libetpan" -Force -ErrorAction Stop
 
             $ExternalsPath = "$LibEtPanDependencyPath\third-party"
             if (-Not (Test-Path "$ExternalsPath\include")) {
@@ -113,10 +116,11 @@ Push-Task -Name "mailcore2" -ScriptBlock {
         }
 
         Push-Task -Name "Build LibEtPan" -ScriptBlock {
-            MSBuild "$LibEtPanDependencyPath\build-windows\libetpan.sln" /t:libetpan /p:Configuration="Release" /p:Platform="x64" /p:DebugSymbols=true /p:DebugType=pdbonly
+            MSBuild "$LibEtPanDependencyPath\build-windows\libetpan.sln" /t:libetpan /p:Configuration="Release" /p:Platform="x64" /p:DebugSymbols=true /p:DebugType=pdbonl
         }
 
         Push-Task -Name "Build CTemplate" -ScriptBlock {
+            Copy-Item -Path "$ProjectRoot\build-windows\vs\ctemplate\libctemplate.vcxproj" -Destination "$CTemplateDependencyPath\vsprojects\libctemplate" -Force -ErrorAction Stop | Write-Host
             MSBuild "$CTemplateDependencyPath\ctemplate.sln" /t:libctemplate /p:Configuration="Release" /p:Platform="x64" /p:DebugSymbols=true /p:DebugType=pdbonly
         }
 
@@ -144,8 +148,8 @@ Push-Task -Name "mailcore2" -ScriptBlock {
             Copy-Item -Path "$TidyDependencyPath\rdtidy.lib" -Destination "$ExternalsPath\lib64" -Force -ErrorAction Stop -PassThru | Write-Host
             Copy-Item -Path "$TidyDependencyPath\rdtidy.exp" -Destination "$ExternalsPath\lib64" -Force -ErrorAction Stop -PassThru | Write-Host
 
-            Copy-Item -Path "$ProjectRoot\build-windows\vs2019\ctemplate\include\template_cache.h" -Destination "$ExternalsPath\include\ctemplate" -Force -ErrorAction Stop | Write-Host
-            Copy-Item -Path "$ProjectRoot\build-windows\vs2019\ctemplate\include\template_string.h" -Destination "$ExternalsPath\include\ctemplate" -Force -ErrorAction Stop | Write-Host
+            Copy-Item -Path "$ProjectRoot\build-windows\vs\ctemplate\include\template_cache.h" -Destination "$ExternalsPath\include\ctemplate" -Force -ErrorAction Stop | Write-Host
+            Copy-Item -Path "$ProjectRoot\build-windows\vs\ctemplate\include\template_string.h" -Destination "$ExternalsPath\include\ctemplate" -Force -ErrorAction Stop | Write-Host
         }
 
         if ($Install) {
@@ -200,10 +204,10 @@ Push-Task -Name "mailcore2" -ScriptBlock {
                 "-DCMAKE_C_COMPILER=clang-cl.exe",
                 "-DCMAKE_CXX_COMPILER=clang-cl.exe",
                 "-DLIBXML_INCLUDE_DIR=$LibXml2Path\include",
-                "-DLIBXML_LIBRARY=$LibXml2Path\lib\libxml2s.lib",
+                "-DLIBXML_LIBRARY=$LibXml2Path\lib\x64\\libxml2s.lib",
                 "-DICU4C_INCLUDE_DIR=$IcuPath\include",
-                "-DICU4C_UC_LIBRARY=$IcuPath\lib\icuuc$IcuVersionMajor.lib",
-                "-DICU4C_IN_LIBRARY=$IcuPath\lib\icuin$IcuVersionMajor.lib",
+                "-DICU4C_UC_LIBRARY=$IcuPath\lib\x64\icuuc$IcuVersionMajor.lib",
+                "-DICU4C_IN_LIBRARY=$IcuPath\lib\x64\icuin$IcuVersionMajor.lib",
                 "-DDISPATCH_INCLUDE_DIR=$SwiftSDKPath\usr\include",
                 "-DDISPATCH_LIBRARY=$SwiftSDKPath\usr\lib\swift\windows\x86_64\dispatch.lib",
                 "-DDISPATCH_BLOCKS_LIBRARY=$SwiftSDKPath\usr\lib\swift\windows\x86_64\BlocksRuntime.lib" -join " "
