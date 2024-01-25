@@ -10,7 +10,7 @@ import Foundation
 import Dispatch
 import XCTest
 
-#if os(Android)
+#if SWIFT_PACKAGE
     import CMailCore
 #endif
 
@@ -141,11 +141,11 @@ class unittest : XCTestCase {
         super.setUp()
         
         #if os(Android)
-        _mainPath = Bundle.main.bundleURL.appendingPathComponent("resources/data-android")
+        _mainPath = Bundle.main.bundleURL.appendingPathComponent("resources/data")
         MCOOperation.setMainQueue(DispatchQueue.main)
         #else
         NSTimeZone.default = TimeZone.init(abbreviation: "PST")!
-        _mainPath = Bundle.init(for: unittest.self).resourceURL!.appendingPathComponent("data")
+        _mainPath = Bundle.module.resourceURL!.appendingPathComponent("data")
         #endif
         
         _builderPath = _mainPath.appendingPathComponent("builder/input")

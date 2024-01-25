@@ -17,8 +17,8 @@ typedef unsigned long ulong;
 
 #include <tidy/tidy.h>
 
-#if defined(ANDROID)
-// Druk: in Andorid we use modern Tidy (buffio.h -> tidybuffio.h)
+#if SWIFT_PACKAGE
+// Druk: in Andorid/iOS/macOS we use modern Tidy (buffio.h -> tidybuffio.h)
 #include <tidy/tidybuffio.h>
 #else
 #include <tidy/buffio.h>

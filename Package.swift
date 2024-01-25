@@ -2,13 +2,31 @@
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
-
-// TODO: move to toolchain
 import Foundation
+
+let ICUVersion = ProcessInfo.processInfo.environment["SWIFT_ANDROID_ICU_VERSION"] ?? ""
+
+#if TARGET_ANDROID
+let CMailCoreExtensionFiles: [String] = [
+    "core/zip/MiniZip/zip.c",
+    "core/zip/MiniZip/ioapi.c"
+]
+#else
+let CMailCoreExtensionFiles: [String] = [
+    "core/basetypes/MCMainThreadMac.mm",
+    "core/basetypes/MCAutoreleasePoolMac.mm",
+    "core/basetypes/MCObjectMac.mm",
+    "core/zip/MCZipMac.mm",
+    "objc/utils/MCOObjectWrapper.mm",
+    "core/zip/MiniZip/zip.c",
+    "core/zip/MiniZip/ioapi.c"
+]
+#endif
 
 private func files(in folder: String, withExtension ext: Set<String>, anchor: String = #file) -> [String] {
     let baseURL = URL(fileURLWithPath: anchor)
         .deletingLastPathComponent()
+        .appendingPathComponent("src")
         .appendingPathComponent(folder)
 
     let allFiles = FileManager.default
@@ -18,123 +36,123 @@ private func files(in folder: String, withExtension ext: Set<String>, anchor: St
     return allFiles
         .compactMap { $0 as? String }
         .map { URL(fileURLWithPath: $0) }
-        .filter { ext.contains($0.pathExtension) }
-        .map { folder + "/" + $0.relativePath } 
+        .filter { ext.contains($0.pathExtension) || ext.contains($0.lastPathComponent) }
+        .map { folder + "/" + $0.relativePath }
+        .filter { !CMailCoreExtensionFiles.contains($0) }
 }
-// end
+
+let CMailCoreExcludes: [String] = files(in: "core", withExtension: ["mm"]) + 
+                                  files(in: "objc", withExtension: ["mm"]) + 
+                                  files(in: "core/zip/MiniZip", withExtension: ["c", "com", "txt", "Makefile"]) + 
+                                  files(in: "core/basetypes/icu-ucsdet", withExtension: ["c", "cpp"])
+
+let products: [Product] = [
+    .library(name: "MailCore", targets: ["MailCore"]),
+]
+
+let dependencies: [Package.Dependency] = [
+    .package(url: "https://github.com/readdle/libetpan.git", .branch("feature/spm-support")),
+    .package(url: "https://github.com/readdle/tidy-html5.git", .branch("feature/spm-support")),
+    .package(url: "https://github.com/readdle/ctemplate.git", .branch("feature/spm-support")),
+    .package(name: "unicode", url: "https://github.com/readdle/swift-unicode", .exact("68.2.0"))
+]
+
+var targets: [Target] = [
+    .target(
+        name: "CMailCore",
+        dependencies: [
+            .product(name: "etpan", package: "libetpan"),
+            .product(name: "RDHtml5Tidy", package: "tidy-html5"),
+            .product(name: "ctemplate", package: "ctemplate"),
+            .product(name: "unicode", package: "unicode", condition: .when(platforms: [.iOS, .macOS])),
+        ],
+        path: "src",
+        exclude: [
+            "core/basetypes/MCWin32.cpp",
+            "core/basetypes/MCStringWin32.cpp",
+            "core/basetypes/MCMainThreadGTK.cpp",
+            "core/basetypes/MCMainThreadAndroid.cpp",
+            "core/basetypes/MCMainThreadWin32.cpp"
+        ] + CMailCoreExcludes,
+        sources: [
+            "async",
+            "c",
+            "core"
+        ] + CMailCoreExtensionFiles,
+        cSettings: [
+            .headerSearchPath("async/imap"),
+            .headerSearchPath("async/pop"),
+            .headerSearchPath("async/smtp"),
+            .headerSearchPath("core/basetypes"),
+            .headerSearchPath("core/zip/MiniZip"),
+            .headerSearchPath("core/abstract"),
+            .headerSearchPath("core/basetypes"),
+            .headerSearchPath("core/imap"),
+            .headerSearchPath("core/nntp"),
+            .headerSearchPath("core/pop"),
+            .headerSearchPath("core/renderer"),
+            .headerSearchPath("core/rfc822"),
+            .headerSearchPath("core/security"),
+            .headerSearchPath("core/smtp"),
+            .headerSearchPath("core/zip"),
+            .headerSearchPath("c"),
+            .headerSearchPath("c/abstract"),
+            .headerSearchPath("c/basetypes"),
+            .headerSearchPath("c/imap"),
+            .headerSearchPath("c/provider"),
+            .headerSearchPath("c/rfc822"),
+            .headerSearchPath("c/smtp"),
+            .headerSearchPath("c/utils"),
+            .headerSearchPath("objc/utils"),
+            .define("ANDROID", .when(platforms: [.android])),
+            .define("UCHAR_TYPE", to: "uint16_t", .when(platforms: [.macOS, .iOS])),
+            .unsafeFlags(["-Wno-module-import-in-extern-c"]),
+            .unsafeFlags(["-fno-objc-arc"], .when(platforms: [.macOS, .iOS]))
+        ],
+        linkerSettings: [
+            .linkedLibrary("z"),
+            .linkedLibrary("xml2"),
+            .linkedLibrary("resolv", .when(platforms: [.iOS, .macOS])),
+            .linkedLibrary("log", .when(platforms: [.android])),
+            .linkedLibrary("icuuc.\(ICUVersion)", .when(platforms: [.android])),
+            .linkedLibrary("icui18n.\(ICUVersion)", .when(platforms: [.android])),
+            .linkedLibrary("icudata.\(ICUVersion)", .when(platforms: [.android])),
+        ]
+    ),
+    .target(
+        name: "MailCore",
+        dependencies: [
+            .product(name: "etpan", package: "libetpan"),
+            "CMailCore"
+        ],
+        path: "src/swift",
+        exclude: [
+            "utils/RSMLibetpanHelper.mm"
+        ]
+    ),
+    .testTarget(
+        name: "MailCoreTests", 
+        dependencies: ["MailCore"],
+        path: "unittest",
+        exclude: [
+            "Info.plist",
+            "CMakeLists.txt",
+            "unittest.cpp",
+            "unittest.mm"
+        ],
+        sources: ["LibetpanHelperTests.swift", "unittest.swift"],
+        resources: [
+            .copy("data")
+        ]
+    )
+]
 
 let package = Package(
     name: "MailCore",
     defaultLocalization: "en",
-    products: [
-        .library(name: "MailCore", targets: ["CMailCore"]),
-    ],
-    dependencies: [
-        .package(url: "https://github.com/readdle/libetpan.git", .branch("feature/spm-support")),
-        .package(url: "https://github.com/readdle/tidy-html5.git", .branch("feature/spm-support")),
-        .package(url: "https://github.com/readdle/ctemplate.git", .branch("feature/spm-support"))
-    ],
-    targets: [
-        .target(
-            name: "CMailCore",
-            dependencies: [
-                .product(name: "etpan", package: "libetpan"),
-                .product(name: "RDHtml5Tidy", package: "tidy-html5"),
-                .product(name: "ctemplate", package: "ctemplate")
-            ],
-            path: ".",
-            exclude: files(in: "src", withExtension: ["mm"]) + [
-                "src/core/zip/MiniZip/iowin32.c",
-                "src/core/zip/MiniZip/miniunz.c",
-                "src/core/zip/MiniZip/mztools.c",
-                "src/core/zip/MiniZip/minizip.c",
-                "src/core/zip/MiniZip/Makefile",
-                "src/core/zip/MiniZip/make_vms.com",
-                "src/core/zip/MiniZip/MiniZip64_info.txt",
-                "src/core/zip/MiniZip/MiniZip64_Changes.txt",
-                "src/core/basetypes/MCWin32.cpp",
-                "src/core/basetypes/MCStringWin32.cpp",
-                "src/core/basetypes/MCMainThreadGTK.cpp",
-                "src/core/basetypes/MCMainThreadAndroid.cpp",
-                "src/core/basetypes/MCMainThreadWin32.cpp",
-                "src/core/basetypes/icu-ucsdet/cmemory.c",
-                "src/core/basetypes/icu-ucsdet/csdetect.cpp",
-                "src/core/basetypes/icu-ucsdet/csmatch.cpp",
-                "src/core/basetypes/icu-ucsdet/csr2022.cpp",
-                "src/core/basetypes/icu-ucsdet/csrecog.cpp",
-                "src/core/basetypes/icu-ucsdet/csrmbcs.cpp",
-                "src/core/basetypes/icu-ucsdet/csrsbcs.cpp",
-                "src/core/basetypes/icu-ucsdet/csrucode.cpp",
-                "src/core/basetypes/icu-ucsdet/csrutf8.cpp",
-                "src/core/basetypes/icu-ucsdet/cstring.c",
-                "src/core/basetypes/icu-ucsdet/inputext.cpp",
-                "src/core/basetypes/icu-ucsdet/uarrsort.c",
-                "src/core/basetypes/icu-ucsdet/ucln_cmn.cpp",
-                "src/core/basetypes/icu-ucsdet/ucln_in.cpp",
-                "src/core/basetypes/icu-ucsdet/ucsdet.cpp",
-                "src/core/basetypes/icu-ucsdet/udataswp.c",
-                "src/core/basetypes/icu-ucsdet/uenum.c",
-                "src/core/basetypes/icu-ucsdet/uinvchar.c",
-                "src/core/basetypes/icu-ucsdet/umutex.cpp",
-                "src/core/basetypes/icu-ucsdet/uobject.cpp",
-                "src/core/basetypes/icu-ucsdet/ustring.cpp",
-                "src/core/basetypes/icu-ucsdet/utrace.c",
-            ],
-            sources: ["src/async", "src/c", "src/core"],
-            cSettings: [
-                .headerSearchPath("src/async/imap"),
-                .headerSearchPath("src/async/pop"),
-                .headerSearchPath("src/async/smtp"),
-                .headerSearchPath("src/core/basetypes"),
-                .headerSearchPath("src/core/zip/MiniZip"),
-                .headerSearchPath("src/core/abstract"),
-                .headerSearchPath("src/core/imap"),
-                .headerSearchPath("src/core/nntp"),
-                .headerSearchPath("src/core/pop"),
-                .headerSearchPath("src/core/renderer"),
-                .headerSearchPath("src/core/rfc822"),
-                .headerSearchPath("src/core/security"),
-                .headerSearchPath("src/core/smtp"),
-                .headerSearchPath("src/core/zip"),
-                .headerSearchPath("src/c"),
-                .headerSearchPath("src/c/abstract"),
-                .headerSearchPath("src/c/basetypes"),
-                .headerSearchPath("src/c/imap"),
-                .headerSearchPath("src/c/provider"),
-                .headerSearchPath("src/c/rfc822"),
-                .headerSearchPath("src/c/smtp"),
-                .headerSearchPath("src/c/utils"),
-                .define("ANDROID"),
-                .unsafeFlags([
-                    "-Wno-module-import-in-extern-c",
-                ])
-            ],
-            linkerSettings: [
-                .linkedLibrary("log"),
-                .linkedLibrary("xml2"),
-                .linkedLibrary("icuuc.73"),
-                .linkedLibrary("icui18n.73"),
-                .linkedLibrary("icudata.73"),
-            ]
-        ),
-        .target(
-            name: "MailCore",
-            dependencies: [
-                .product(name: "etpan", package: "libetpan"),
-                "CMailCore"
-            ],
-            path: "src/swift",
-            exclude: [
-                "utils/RSMLibetpanHelper.mm"
-            ]
-        ),
-        .testTarget(
-            name: "MailCoreTests", 
-            dependencies: ["MailCore"],
-            path: "unittest",
-            sources: ["LibetpanHelperTests.swift", "unittest.swift"]
-        )
-    ],
+    products: products,
+    dependencies: dependencies,
+    targets: targets,
     swiftLanguageVersions: [.v5],
     cxxLanguageStandard: .cxx11
 )

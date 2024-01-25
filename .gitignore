@@ -60,3 +60,4 @@ LinuxMain.swift
 third-party
 test.log
 junit.xml
+.build-ios

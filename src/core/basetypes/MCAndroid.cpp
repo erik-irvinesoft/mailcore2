@@ -29,6 +29,7 @@
 
 #include "MCAndroid.h"
 
+#if defined(ANDROID)
 #define I_AM_QSORT_R
 
 //#if defined(LIBC_SCCS) && !defined(lint)
@@ -195,3 +196,4 @@ loop:	SWAPINIT(a, es);
 	}
 /*		qsort(pn - r, r / es, es, cmp);*/
 }
+#endif

@@ -14,10 +14,7 @@ import MailCore
 public class LibetpanHelperTests: XCTestCase {
     
     override public func setUp() {
-        #if os(Android)
-        #else
-            NSTimeZone.default = TimeZone(identifier: "Europe/Kiev")!
-        #endif
+        NSTimeZone.default = TimeZone(identifier: "Europe/Kiev")!
     }
     
     func testDates() {
