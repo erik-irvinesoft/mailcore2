@@ -1,0 +1,52 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "ctemplate",
+        "repositoryURL": "https://github.com/readdle/ctemplate.git",
+        "state": {
+          "branch": "feature/spm-support",
+          "revision": "cfd6ddb896c0e452bcc51ed529305d699751f647",
+          "version": null
+        }
+      },
+      {
+        "package": "etpan",
+        "repositoryURL": "https://github.com/readdle/libetpan.git",
+        "state": {
+          "branch": "feature/spm-support",
+          "revision": "703217a4bfb656c6ac15b42a5b67339102706fcc",
+          "version": null
+        }
+      },
+      {
+        "package": "OpenSSL",
+        "repositoryURL": "https://github.com/krzyzanowskim/OpenSSL.git",
+        "state": {
+          "branch": null,
+          "revision": "0faf71a188bcfdf0245cab42886b9b240ca71c52",
+          "version": "1.1.2200"
+        }
+      },
+      {
+        "package": "unicode",
+        "repositoryURL": "https://github.com/readdle/swift-unicode",
+        "state": {
+          "branch": null,
+          "revision": "fb8aac372834ccb8fab0a5c1742df862d47c4156",
+          "version": "68.2.0"
+        }
+      },
+      {
+        "package": "RDHtml5Tidy",
+        "repositoryURL": "https://github.com/readdle/tidy-html5.git",
+        "state": {
+          "branch": "feature/spm-support",
+          "revision": "65128477fdbfd6554b90233a63302e3f89e67798",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}

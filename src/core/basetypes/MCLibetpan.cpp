@@ -36,19 +36,20 @@ time_t mailcore::timestampFromDate(struct mailimf_date_time * date_time)
     tmval.tm_hour = date_time->dt_hour;
     tmval.tm_mday = date_time->dt_day;
     tmval.tm_mon  = date_time->dt_month - 1;
+    // workaround when century is not given in year
     if (date_time->dt_year < 1000) {
-        // workaround when century is not given in year
-        #if __APPLE__
-            tmval.tm_year = date_time->dt_year + 2000 - 1900;
-        #else
-            // Fix for 2038 issue on Android: https://en.wikipedia.org/wiki/Year_2038_problem
+        // Fix for 2038 issue on 32-bit OS: https://en.wikipedia.org/wiki/Year_2038_problem
+        if (sizeof(void*) == 4) {
             if (date_time->dt_year >= 30) {
                 // If date_time->dt_year > 30, assume that it 1930 < date_time->dt_year
                 tmval.tm_year = date_time->dt_year;
             } else {
                 tmval.tm_year = date_time->dt_year + 2000 - 1900;
             }
-        #endif
+        }
+        else {
+            tmval.tm_year = date_time->dt_year + 2000 - 1900;
+        }
     }
     else {
         tmval.tm_year = date_time->dt_year - 1900;
