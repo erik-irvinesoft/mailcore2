@@ -5,7 +5,6 @@ import PackageDescription
 import Foundation
 
 let ICUVersion = ProcessInfo.processInfo.environment["SWIFT_ANDROID_ICU_VERSION"] ?? ""
-let BuildConfig = ProcessInfo.processInfo.environment["UNIT_TEST"] != nil ? "UNIT_TEST" : "PRODUCTION"
 
 #if TARGET_ANDROID
 let CMailCoreExtensionFiles: [String] = [
@@ -105,7 +104,6 @@ var targets: [Target] = [
             .headerSearchPath("c/smtp"),
             .headerSearchPath("c/utils"),
             .headerSearchPath("objc/utils"),
-            .define(BuildConfig),
             .define("ANDROID", .when(platforms: [.android])),
             .define("UCHAR_TYPE", to: "uint16_t", .when(platforms: [.macOS, .iOS])),
             .unsafeFlags(["-Wno-module-import-in-extern-c"]),

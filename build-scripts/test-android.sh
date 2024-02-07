@@ -63,8 +63,11 @@ timeout 120 adb -s emulator-$EMULATOR_PORT wait-for-any-device;
 # Clear logcat from previous sessions
 timeout 30 bash -c "adb logcat -c || true"
 
+# Create reports folder
+mkdir -p .build/reports
+
 # Start write adb logcat to file
-adb logcat | ndk-stack -sym .build/debug > ndk-stack.log &
+adb logcat | ndk-stack -sym .build/debug > .build/reports/ndk-stack.log &
 
 # Build
 pass_to_swiftc="-Xbuild -Xswiftc -Xbuild"
@@ -74,12 +77,12 @@ swift-test --deploy \
     $pass_to_frontend -experimental-disable-objc-attr
 
 # Test
-swift-test --just-run | tee test.log
-
+swift-test --just-run | tee .build/reports/test.log
 return_code=${PIPESTATUS[0]}
 
-cat test.log | xcpretty --report junit
+cat .build/reports/test.log | xcpretty --report junit --output .build/reports/junit.xml
 
-cat ndk-stack.log
+cat .build/reports/ndk-stack.log
 
+# return code
 exit ${return_code}
