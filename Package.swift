@@ -47,7 +47,7 @@ let CMailCoreExcludes: [String] = files(in: "core", withExtension: ["mm"]) +
                                   files(in: "core/basetypes/icu-ucsdet", withExtension: ["c", "cpp"])
 
 let products: [Product] = [
-    .library(name: "MailCore", targets: ["MailCore"]),
+    .library(name: "MailCore", type: .dynamic, targets: ["MailCore"]),
 ]
 
 let dependencies: [Package.Dependency] = [
@@ -128,6 +128,9 @@ var targets: [Target] = [
         path: "src/swift",
         exclude: [
             "utils/RSMLibetpanHelper.mm"
+        ],
+        linkerSettings: [
+            .unsafeFlags(["-Xlinker", "-soname", "-Xlinker", "libMailCore.so"], .when(platforms: [.android]))
         ]
     ),
     .testTarget(
