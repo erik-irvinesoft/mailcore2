@@ -688,12 +688,18 @@ void IMAPSession::connect(ErrorCode * pError)
         break;
 
         case ConnectionTypeTLS:
-#if _MSC_VER || defined(ANDROID) || defined(__ANDROID__)
-        r = mailimap_ssl_connect_voip_with_callback(mImap, MCUTF8(mHostname), mPort, isVoIPEnabled(), setMailStreamSSLContextServerName, const_cast<void*>(static_cast<const void*>(MCUTF8(mHostname))));
-#else
-        // Passing callback here forces libetpan to skip CFNetwork code branch
-        // and switch to OpenSSL. Doesn't work on Apple platfrorms.
+#if __APPLE__
         r = mailimap_ssl_connect_voip(mImap, MCUTF8(mHostname), mPort, isVoIPEnabled());
+#else
+        // Passing callback to set the server name into SSL context
+        // Needed for SNI extension for TLS https://en.wikipedia.org/wiki/Server_Name_Indication
+        // On Apple platforms libetpan uses CFNetwork instead, that's why callback is not needed
+        r = mailimap_ssl_connect_voip_with_callback(mImap, 
+                                                    MCUTF8(mHostname),
+                                                    mPort,
+                                                    isVoIPEnabled(),
+                                                    setMailStreamSSLContextServerName,
+                                                    const_cast<void*>(static_cast<const void*>(MCUTF8(mHostname))));
 #endif
         MCLog("ssl connect %s %u %u", MCUTF8(mHostname), mPort, r);
         if (hasError(r)) {
