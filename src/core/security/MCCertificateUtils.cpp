@@ -26,6 +26,41 @@
 #include "MCLock.h"
 #include "MCLog.h"
 
+#if __APPLE__
+#else
+char* X509_to_string(X509* cert) {
+    BIO* bio = BIO_new(BIO_s_mem());
+    if (!bio) {
+        // Handle error
+        return NULL;
+    }
+
+    if (!X509_print(bio, cert)) {
+        // Handle error
+        BIO_free(bio);
+        return NULL;
+    }
+
+    // Determine the length of the data.
+    char* output;
+    long len = BIO_get_mem_data(bio, &output);
+
+    // Allocate memory for the string
+    char* str = (char*)malloc(len + 1);
+    if (str) {
+        // Copy the data
+        memcpy(str, output, len);
+        // Null-terminate the string
+        str[len] = '\0';
+    }
+
+    // Cleanup
+    BIO_free(bio);
+
+    return str;
+}
+#endif
+
 bool mailcore::checkCertificate(mailstream * stream, String * hostname)
 {
 #if __APPLE__
@@ -161,6 +196,7 @@ err:
 	status = X509_STORE_set_default_paths(store);
     if (status != 1) {
         printf("Error loading the system-wide CA certificates");
+        MCLog("Error loading the system-wide CA certificates");
     }
     
     certificates = sk_X509_new_null();
@@ -168,29 +204,45 @@ err:
         MMAPString * str;
         str = (MMAPString *) carray_get(cCerts, i);
         if (str == NULL) {
+            MCLog("MCCertificateUtils error: out of index in array");
             goto free_certs;
         }
+        
         BIO *bio = BIO_new_mem_buf((void *) str->str, str->len);
         X509 *certificate = d2i_X509_bio(bio, NULL);
         BIO_free(bio);
         if (!sk_X509_push(certificates, certificate)) {
+            MCLog("MCCertificateUtils error: can't sk_X509_push");
             goto free_certs;
         }
     }
     
+    ERR_clear_error();
     storectx = X509_STORE_CTX_new();
     if (storectx == NULL) {
+        MCLog("MCCertificateUtils error: can't create X509_STORE_CTX");
         goto free_certs;
     }
     
+    ERR_clear_error();
     status = X509_STORE_CTX_init(storectx, store, sk_X509_value(certificates, 0), certificates);
     if (status != 1) {
+        MCLog("MCCertificateUtils error: X509_STORE_CTX_init status %d", status);
         goto free_certs;
     }
     
+    ERR_clear_error();
     status = X509_verify_cert(storectx);
     if (status == 1) {
         result = true;
+    }
+    else {
+        MCLog("MCCertificateUtils error: X509_verify_cert status %d", status);
+        unsigned long errCode;
+        while ((errCode = ERR_get_error()) != 0) {
+            char *errMsg = ERR_error_string(errCode, NULL);
+            MCLog("OpenSSL Error: %s", errMsg);
+        }
     }
     
 free_certs:

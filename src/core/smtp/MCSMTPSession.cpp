@@ -290,6 +290,10 @@ void SMTPSession::connectIfNeeded(ErrorCode * pError)
     }
 }
 
+static void setMailStreamSSLContextServerName(mailstream_ssl_context * ssl_context, void * data) {
+    mailstream_ssl_set_server_name(ssl_context, static_cast<char*>(data));
+}
+
 void SMTPSession::connect(ErrorCode * pError)
 {
     int r;
@@ -359,7 +363,20 @@ void SMTPSession::connect(ErrorCode * pError)
             break;
             
         case ConnectionTypeTLS:
-            r = mailsmtp_ssl_connect(mSmtp, MCUTF8(mHostname), port());
+#if __APPLE__
+        r = mailsmtp_ssl_connect(mSmtp, MCUTF8(mHostname), port());
+#else
+        // Passing callback to set the server name into SSL context
+        // Needed for SNI extension for TLS https://en.wikipedia.org/wiki/Server_Name_Indication
+        // On Apple platforms libetpan uses CFNetwork instead, that's why callback is not needed
+        r = mailsmtp_ssl_connect_with_callback(mSmtp,
+                                               MCUTF8(mHostname),
+                                               port(),
+                                               setMailStreamSSLContextServerName,
+                                               const_cast<void*>(static_cast<const void*>(MCUTF8(mHostname))));
+#endif
+            
+            
             saveLastResponse();
             if (r != MAILSMTP_NO_ERROR) {
                 MCLog("#SMTP: TLS mailsmtp_ssl_connect %d", r);
