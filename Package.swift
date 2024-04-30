@@ -107,6 +107,7 @@ var targets: [Target] = [
             .define("ANDROID", .when(platforms: [.android])),
             .define("UCHAR_TYPE", to: "uint16_t", .when(platforms: [.macOS, .iOS])),
             .unsafeFlags(["-Wno-module-import-in-extern-c"]),
+            .unsafeFlags(["-fsigned-char"], .when(platforms: [.android])),
             .unsafeFlags(["-fno-objc-arc"], .when(platforms: [.macOS, .iOS]))
         ],
         linkerSettings: [

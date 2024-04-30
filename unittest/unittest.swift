@@ -326,6 +326,30 @@ class unittest : XCTestCase {
         XCTAssertTrue(mutf7string.mUTF7DecodedString().string() == "~peter/mail/台北/日本語")
         XCTAssertTrue("~peter/mail/台北/日本語".mailCoreString().mUTF7EncodedString().isEqual(mutf7string))
     }
+    
+    func testDecodedDataUsingBase64Encoding() {
+        let str = "RU1QVFkK\r\n\r\n--_005"
+
+        guard let uchars = str.data(using: .utf16LittleEndian) else {
+            XCTFail()
+            return
+        }
+        
+        let cStr = str.cString(using: .utf8)
+        let result = cStr?.withUnsafeBytes { bytes in
+            guard let bytes: UnsafePointer<Int8> = Data.unwrapUnsafeBytes(bytes) else {
+                assert(false)
+                return ""
+            }
+            
+            var len: Int32 = -1
+            let result = MCDecodeBase64ByLines(bytes, Int32(uchars.count / 2), &len)
+            
+            return String(cString: result!)
+        }
+        
+        XCTAssertEqual(result, "EMPTY\n")
+    }
 }
 
 extension String {
