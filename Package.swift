@@ -23,7 +23,7 @@ let CMailCoreExtensionFiles: [String] = [
 ]
 #endif
 
-private func files(in folder: String, withExtension ext: Set<String>, anchor: String = #file) -> [String] {
+private func files(in folder: String, withExtension ext: Set<String>, anchor: String = #filePath) -> [String] {
     let baseURL = URL(fileURLWithPath: anchor)
         .deletingLastPathComponent()
         .appendingPathComponent("src")
