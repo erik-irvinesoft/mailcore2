@@ -6,12 +6,147 @@ import Foundation
 
 let ICUVersion = ProcessInfo.processInfo.environment["SWIFT_ANDROID_ICU_VERSION"] ?? ""
 
+var CMailCoreExcludes = [
+    "core/basetypes/MCDataMac.mm",
+    "core/rfc822/MCMessageParserMac.mm",
+
+    "core/zip/MiniZip/MiniZip64_Changes.txt",
+    "core/zip/MiniZip/unzip.c",
+    "core/zip/MiniZip/Makefile",
+    "core/zip/MiniZip/mztools.c",
+    "core/zip/MiniZip/MiniZip64_info.txt",
+    "core/zip/MiniZip/make_vms.com",
+    "core/zip/MiniZip/iowin32.c",
+    "core/zip/MiniZip/minizip.c",
+    "core/zip/MiniZip/miniunz.c",
+
+    "core/basetypes/icu-ucsdet/ucsdet.cpp",
+    "core/basetypes/icu-ucsdet/csrutf8.cpp",
+    "core/basetypes/icu-ucsdet/csdetect.cpp",
+    "core/basetypes/icu-ucsdet/uinvchar.c",
+    "core/basetypes/icu-ucsdet/csrucode.cpp",
+    "core/basetypes/icu-ucsdet/uarrsort.c",
+    "core/basetypes/icu-ucsdet/ucln_in.cpp",
+    "core/basetypes/icu-ucsdet/csrsbcs.cpp",
+    "core/basetypes/icu-ucsdet/ucln_cmn.cpp",
+    "core/basetypes/icu-ucsdet/csr2022.cpp",
+    "core/basetypes/icu-ucsdet/inputext.cpp",
+    "core/basetypes/icu-ucsdet/cmemory.c",
+    "core/basetypes/icu-ucsdet/uenum.c",
+    "core/basetypes/icu-ucsdet/umutex.cpp",
+    "core/basetypes/icu-ucsdet/csrmbcs.cpp",
+    "core/basetypes/icu-ucsdet/utrace.c",
+    "core/basetypes/icu-ucsdet/csmatch.cpp",
+    "core/basetypes/icu-ucsdet/ustring.cpp",
+    "core/basetypes/icu-ucsdet/udataswp.c",
+    "core/basetypes/icu-ucsdet/cstring.c",
+    "core/basetypes/icu-ucsdet/uobject.cpp",
+    "core/basetypes/icu-ucsdet/csrecog.cpp",
+
+    "objc/abstract/MCOAbstractPart.mm",
+    "objc/abstract/MCOAbstractMultipart.mm",
+    "objc/abstract/MCOMessageHeader.mm",
+    "objc/abstract/MCOAbstractMessage.mm",
+    "objc/abstract/MCOAbstractMessageRendererCallback.mm",
+    "objc/abstract/MCOAbstractMessagePart.mm",
+    "objc/abstract/MCOAddress.mm",
+    "objc/pop/MCOPOPFetchMessageOperation.mm",
+    "objc/pop/MCOPOPNoopOperation.mm",
+    "objc/pop/MCOPOPSession.mm",
+    "objc/pop/MCOPOPMessageInfo.mm",
+    "objc/pop/MCOPOPFetchHeaderOperation.mm",
+    "objc/pop/MCOPOPOperation.mm",
+    "objc/pop/MCOPOPFetchMessagesOperation.mm",
+    "objc/imap/MCOIMAPCustomCommandOperation.mm",
+    "objc/imap/MCOIMAPCheckAccountOperation.mm",
+    "objc/imap/MCOIMAPIdentityOperation.mm",
+    "objc/imap/MCOIMAPFolderInfo.mm",
+    "objc/imap/MCOIMAPMultipart.mm",
+    "objc/imap/MCOIMAPFetchMessagesOperation.mm",
+    "objc/imap/MCOIMAPSession.mm",
+    "objc/imap/MCOIMAPMessage.mm",
+    "objc/imap/MCOIMAPMultiDisconnectOperation.mm",
+    "objc/imap/MCOIMAPBaseOperation.mm",
+    "objc/imap/MCOIMAPAppendMessageOperation.mm",
+    "objc/imap/MCOIMAPMoveMessagesOperation.mm",
+    "objc/imap/MCOIMAPFolderInfoOperation.mm",
+    "objc/imap/MCOIMAPOperation.mm",
+    "objc/imap/MCOIMAPFetchContentToFileOperation.mm",
+    "objc/imap/MCOIMAPQuotaOperation.mm",
+    "objc/imap/MCOIMAPFolderStatusOperation.mm",
+    "objc/imap/MCOIMAPIdentity.mm",
+    "objc/imap/MCOIMAPMessagePart.mm",
+    "objc/imap/MCOIMAPFolder.mm",
+    "objc/imap/MCOIMAPNamespaceItem.mm",
+    "objc/imap/MCOIMAPFolderStatus.mm",
+    "objc/imap/MCOIMAPFetchParsedContentOperation.mm",
+    "objc/imap/MCOIMAPSearchExpression.mm",
+    "objc/imap/MCOIMAPFetchFoldersOperation.mm",
+    "objc/imap/MCOIMAPNamespace.mm",
+    "objc/imap/MCOIMAPNoopOperation.mm",
+    "objc/imap/MCOIMAPFetchNamespaceOperation.mm",
+    "objc/imap/MCOIMAPSearchOperation.mm",
+    "objc/imap/MCOIMAPCapabilityOperation.mm",
+    "objc/imap/MCOIMAPIdleOperation.mm",
+    "objc/imap/MCOIMAPFetchContentOperation.mm",
+    "objc/imap/MCOIMAPPart.mm",
+    "objc/imap/MCOIMAPCopyMessagesOperation.mm",
+    "objc/imap/MCOIMAPMessageRenderingOperation.mm",
+    "objc/rfc822/MCOMessageBuilder.mm",
+    "objc/rfc822/MCOMessagePart.mm",
+    "objc/rfc822/MCOMessageParser.mm",
+    "objc/rfc822/MCOMultipart.mm",
+    "objc/rfc822/MCOAttachment.mm",
+    "objc/provider/MCOAccountValidator.mm",
+    "objc/provider/MCONetService.mm",
+    "objc/provider/MCOMailProvidersManager.mm",
+    "objc/provider/MCOMailProvider.mm",
+    "objc/utils/MCORange.mm",
+    "objc/utils/NSDictionary+MCO.mm",
+    "objc/utils/NSArray+MCO.mm",
+    "objc/utils/NSSet+MCO.mm",
+    "objc/utils/MCOIndexSet.mm",
+    "objc/utils/NSObject+MCO.mm",
+    "objc/utils/MCOOperation.mm",
+    "objc/utils/NSError+MCO.mm",
+    "objc/utils/NSValue+MCO.mm",
+    "objc/utils/NSString+MCO.mm",
+    "objc/utils/NSData+MCO.mm",
+    "objc/smtp/MCOSMTPSession.mm",
+    "objc/smtp/MCOSMTPLoginOperation.mm",
+    "objc/smtp/MCOSMTPNoopOperation.mm",
+    "objc/smtp/MCOSMTPSendOperation.mm",
+    "objc/smtp/MCOSMTPOperation.mm",
+    "objc/nntp/MCONNTPDisconnectOperation.mm",
+    "objc/nntp/MCONNTPListNewsgroupsOperation.mm",
+    "objc/nntp/MCONNTPFetchOverviewOperation.mm",
+    "objc/nntp/MCONNTPOperation.mm",
+    "objc/nntp/MCONNTPGroupInfo.mm",
+    "objc/nntp/MCONNTPFetchServerTimeOperation.mm",
+    "objc/nntp/MCONNTPFetchHeaderOperation.mm",
+    "objc/nntp/MCONNTPPostOperation.mm",
+    "objc/nntp/MCONNTPFetchAllArticlesOperation.mm",
+    "objc/nntp/MCONNTPFetchArticleOperation.mm",
+    "objc/nntp/MCONNTPSession.mm",
+]
+
 #if TARGET_ANDROID
+
+CMailCoreExcludes += [
+    "core/basetypes/MCMainThreadMac.mm",
+    "core/basetypes/MCAutoreleasePoolMac.mm",
+    "core/basetypes/MCObjectMac.mm",
+    "core/zip/MCZipMac.mm",
+    "objc/utils/MCOObjectWrapper.mm",
+]
+
 let CMailCoreExtensionFiles: [String] = [
     "core/zip/MiniZip/zip.c",
     "core/zip/MiniZip/ioapi.c"
 ]
+
 #else
+
 let CMailCoreExtensionFiles: [String] = [
     "core/basetypes/MCMainThreadMac.mm",
     "core/basetypes/MCAutoreleasePoolMac.mm",
@@ -21,30 +156,8 @@ let CMailCoreExtensionFiles: [String] = [
     "core/zip/MiniZip/zip.c",
     "core/zip/MiniZip/ioapi.c"
 ]
+
 #endif
-
-private func files(in folder: String, withExtension ext: Set<String>, anchor: String = #filePath) -> [String] {
-    let baseURL = URL(fileURLWithPath: anchor)
-        .deletingLastPathComponent()
-        .appendingPathComponent("src")
-        .appendingPathComponent(folder)
-
-    let allFiles = FileManager.default
-        .enumerator(atPath: baseURL.path)?
-        .allObjects ?? []
-
-    return allFiles
-        .compactMap { $0 as? String }
-        .map { URL(fileURLWithPath: $0) }
-        .filter { ext.contains($0.pathExtension) || ext.contains($0.lastPathComponent) }
-        .map { folder + "/" + $0.relativePath }
-        .filter { !CMailCoreExtensionFiles.contains($0) }
-}
-
-let CMailCoreExcludes: [String] = files(in: "core", withExtension: ["mm"]) + 
-                                  files(in: "objc", withExtension: ["mm"]) + 
-                                  files(in: "core/zip/MiniZip", withExtension: ["c", "com", "txt", "Makefile"]) + 
-                                  files(in: "core/basetypes/icu-ucsdet", withExtension: ["c", "cpp"])
 
 let products: [Product] = [
     .library(name: "MailCore", type: .dynamic, targets: ["MailCore"]),
