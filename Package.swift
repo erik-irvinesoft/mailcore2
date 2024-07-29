@@ -164,7 +164,7 @@ let products: [Product] = [
 ]
 
 let dependencies: [Package.Dependency] = [
-    .package(url: "https://github.com/readdle/libetpan.git", .branch("feature/spm-support")),
+    .package(url: "https://github.com/readdle/libetpan.git", .branch("feature/spm-support-debug")),
     .package(url: "https://github.com/readdle/tidy-html5.git", .branch("feature/spm-support")),
     .package(url: "https://github.com/readdle/ctemplate.git", .branch("feature/spm-support")),
     .package(name: "unicode", url: "https://github.com/readdle/swift-unicode", .exact("68.2.0"))

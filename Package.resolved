@@ -14,8 +14,8 @@
         "package": "etpan",
         "repositoryURL": "https://github.com/readdle/libetpan.git",
         "state": {
-          "branch": "feature/spm-support",
-          "revision": "ef003293ca1622b27991872d0831828b3840b521",
+          "branch": "feature/spm-support-debug",
+          "revision": "e2126918346c9157e4aad8c96db94f7fdfb92d6b",
           "version": null
         }
       },
