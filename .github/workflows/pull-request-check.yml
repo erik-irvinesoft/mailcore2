@@ -33,7 +33,7 @@ jobs:
         
   macOS:
     name: "mailcore2 - macOS"
-    runs-on: [self-hosted, macOS, ARM64, Android]
+    runs-on: macos-latest
     timeout-minutes: 60
 
     steps:
