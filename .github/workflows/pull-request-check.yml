@@ -39,7 +39,7 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-    - name: Run android tests
+    - name: Run tests
       run: ./build-scripts/test-macos.sh
     - name: Publish Report
       uses: mikepenz/action-junit-report@v3
@@ -58,7 +58,7 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-    - name: Run android tests
+    - name: Run tests
       run: ./build-scripts/test-ios.sh
     - name: Publish Report
       uses: mikepenz/action-junit-report@v3
