@@ -14,23 +14,40 @@ jobs:
 
   Android:
     name: "mailcore2 - Android"
-    runs-on: [self-hosted, macOS, ARM64, Android]
-    timeout-minutes: 60
-
+    runs-on: macos-13
+    
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-    - name: Run android tests
-      run: ./build-scripts/test-android.sh
+    - uses: actions/checkout@v4
+    - name: Select XCode 14.2
+      run: sudo xcode-select --switch /Applications/Xcode_14.2.app
+    - name: Install NDK
+      run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;25.2.9519653"
+    - name: Install Swift Android Toolchain
+      run: wget https://github.com/readdle/swift-android-toolchain/releases/latest/download/swift-android.zip;
+        unzip swift-android.zip;
+        swift-android/bin/swift-android tools --update;
+    - name: Install Android Emulator
+      run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "system-images;android-29;google_apis;x86_64"
+    - name: Create Android Emulator
+      run: $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd -n ci-test -k "system-images;android-29;google_apis;x86_64" -d "pixel" --force
+    - name: Start Android Emulator
+      run: $ANDROID_HOME/emulator/emulator -no-window -avd ci-test -noaudio > /dev/null &
+    - name: Run connected android tests
+      run: export ANDROID_NDK_HOME=$ANDROID_HOME/ndk/25.2.9519653;
+        export SWIFT_ANDROID_HOME=$(pwd)/swift-android;
+        export PATH=$ANDROID_NDK_HOME:$PATH;
+        export PATH=$SWIFT_ANDROID_HOME/bin:$SWIFT_ANDROID_HOME/build-tools/current:$PATH;
+        adb wait-for-device;
+        ./build-scripts/test-android.sh
     - name: Publish Report
       uses: mikepenz/action-junit-report@v3
       if: failure()
       with:
         report_paths: .build/reports/junit.xml
-        check_name: mailcore2-android
+        check_name: mailcore2 - Android - Report
         detailed_summary: true
         include_passed: true
-        
+
   macOS:
     name: "mailcore2 - macOS"
     runs-on: macos-latest
