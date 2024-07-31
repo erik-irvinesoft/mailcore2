@@ -52,7 +52,7 @@ jobs:
         
   iOS:
     name: "mailcore2 - iOS"
-    runs-on: [self-hosted, macOS, ARM64, Android]
+    runs-on: macos-latest
     timeout-minutes: 60
 
     steps:
