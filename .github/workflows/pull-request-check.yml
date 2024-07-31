@@ -48,40 +48,30 @@ jobs:
         detailed_summary: true
         include_passed: true
 
-  macOS:
-    name: "mailcore2 - macOS"
+  Darwin:
+    name: "mailcore2 - ${{ matrix.os }}"
     runs-on: macos-latest
     timeout-minutes: 60
+
+    strategy:
+      matrix:
+        os: [macOS, iOS]
+        include:
+          - os: macOS
+            os_lowercased: macos
+          - os: iOS
+            os_lowercased: ios
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
     - name: Run tests
-      run: ./build-scripts/test-macos.sh
+      run: ./build-scripts/test-${{ matrix.os_lowercased }}.sh
     - name: Publish Report
       uses: mikepenz/action-junit-report@v3
       if: failure()
       with:
         report_paths: .build/reports/junit.xml
-        check_name: mailcore2-macOS
-        detailed_summary: true
-        include_passed: true
-        
-  iOS:
-    name: "mailcore2 - iOS"
-    runs-on: macos-latest
-    timeout-minutes: 60
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-    - name: Run tests
-      run: ./build-scripts/test-ios.sh
-    - name: Publish Report
-      uses: mikepenz/action-junit-report@v3
-      if: failure()
-      with:
-        report_paths: .build-ios/reports/junit.xml
-        check_name: mailcore2-iOS
+        check_name: mailcore2 - ${{ matrix.os }} - Report
         detailed_summary: true
         include_passed: true
