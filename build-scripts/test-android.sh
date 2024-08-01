@@ -58,12 +58,13 @@ $ANDROID_HOME/emulator/emulator -no-window -avd $EMULATOR_NAME -noaudio -port $E
 adb -s emulator-$EMULATOR_PORT wait-for-any-device;
 
 # Clear logcat from previous sessions
-# bash -c "adb logcat -c || true"
+bash -c "adb logcat -c || true"
 
 # Create reports folder
 mkdir -p .build/reports
 
 # Start write adb logcat to file
+mkdir -p .build/debug
 adb logcat | ndk-stack -sym .build/debug > .build/reports/ndk-stack.log &
 
 # Build
@@ -77,7 +78,7 @@ swift-test --deploy \
 swift-test --just-run | tee .build/reports/test.log
 return_code=${PIPESTATUS[0]}
 
-cat .build/reports/test.log | xcpretty --report junit --output .build/reports/junit.xml
+cat .build/reports/test.log | xcbeautify --report junit --report-path .build/reports
 
 cat .build/reports/ndk-stack.log
 
