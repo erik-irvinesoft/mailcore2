@@ -52,7 +52,7 @@ $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd -n $EMULATOR_NAME -
 adb start-server
 
 # Start emulator
-$ANDROID_HOME/emulator/emulator -no-window -avd $EMULATOR_NAME -noaudio -port $EMULATOR_PORT -timezone America/Los_Angeles -partition-size 4000 > /dev/null &
+$ANDROID_HOME/emulator/emulator -no-window -avd $EMULATOR_NAME -noaudio -port $EMULATOR_PORT -timezone "PST" -partition-size 4000 > /dev/null &
 
 # Wait until enmulator actually started
 adb -s emulator-$EMULATOR_PORT wait-for-any-device;
