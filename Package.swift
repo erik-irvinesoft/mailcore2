@@ -130,6 +130,10 @@ var CMailCoreExcludes = [
     "objc/nntp/MCONNTPSession.mm",
 ]
 
+var mailcoreExcludes = [
+    "utils/RSMLibetpanHelper.mm",
+]
+
 #if TARGET_ANDROID
 
 CMailCoreExcludes += [
@@ -145,6 +149,12 @@ let CMailCoreExtensionFiles: [String] = [
     "core/zip/MiniZip/ioapi.c"
 ]
 
+let mailcoreResources: [Resource] = []
+
+mailcoreExcludes += [
+    "resources/providers.json"
+]
+
 #else
 
 let CMailCoreExtensionFiles: [String] = [
@@ -155,6 +165,10 @@ let CMailCoreExtensionFiles: [String] = [
     "objc/utils/MCOObjectWrapper.mm",
     "core/zip/MiniZip/zip.c",
     "core/zip/MiniZip/ioapi.c"
+]
+
+let mailcoreResources: [Resource] = [
+    .copy("resources/providers.json")
 ]
 
 #endif
@@ -240,9 +254,8 @@ var targets: [Target] = [
             "CMailCore"
         ],
         path: "src/swift",
-        exclude: [
-            "utils/RSMLibetpanHelper.mm"
-        ],
+        exclude: mailcoreExcludes,
+        resources: mailcoreResources,
         linkerSettings: [
             .unsafeFlags(["-Xlinker", "-soname", "-Xlinker", "libMailCore.so"], .when(platforms: [.android]))
         ]
