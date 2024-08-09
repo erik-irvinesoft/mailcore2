@@ -17,7 +17,9 @@ public class MCOMailProvidersManager: NSObjectCompat {
         super.init()
 
         #if !os(Android) && !os(Windows)
+        print("MCOMailProvidersManager, looking for providers.json")
         if let filename = Bundle(for: MCOMailProvidersManager.self).path(forResource: "providers", ofType: "json") {
+            print("MCOMailProvidersManager, got \(filename)")
             MCOMailProvidersManager.registerProviders(filename: filename)
         }
         #endif
