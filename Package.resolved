@@ -15,17 +15,8 @@
         "repositoryURL": "https://github.com/readdle/libetpan.git",
         "state": {
           "branch": "feature/spm-support",
-          "revision": "ef003293ca1622b27991872d0831828b3840b521",
+          "revision": "30b661cfc6f5d334c9cfae24bd2c5f816c7f2db2",
           "version": null
-        }
-      },
-      {
-        "package": "OpenSSL",
-        "repositoryURL": "https://github.com/krzyzanowskim/OpenSSL.git",
-        "state": {
-          "branch": null,
-          "revision": "0faf71a188bcfdf0245cab42886b9b240ca71c52",
-          "version": "1.1.2200"
         }
       },
       {

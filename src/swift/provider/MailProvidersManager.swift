@@ -17,7 +17,13 @@ public class MCOMailProvidersManager: NSObjectCompat {
         super.init()
 
         #if !os(Android) && !os(Windows)
-        if let filename = Bundle(for: MCOMailProvidersManager.self).path(forResource: "providers", ofType: "json") {
+        let filename: String?
+        #if SWIFT_PACKAGE
+        filename = Bundle.module.path(forResource: "providers", ofType: "json")
+        #else
+        let filename = Bundle(for: MCOMailProvidersManager.self).path(forResource: "providers", ofType: "json")
+        #endif
+        if let filename = filename {
             MCOMailProvidersManager.registerProviders(filename: filename)
         }
         #endif

@@ -30,9 +30,6 @@ fi
 export EMULATOR_PACKAGE="system-images;android-$EMULATOR_SDK_VERSION;google_apis;$EMULATOR_ARCH"
 export EMULATOR_ABI=google_apis/$EMULATOR_ARCH
 
-# Select Xcode 14.2
-sudo xcode-select --switch /Applications/Xcode14.2.app;
-
 function finish {
   exit_code=$?
     adb -s $ANDROID_SERIAL emu kill
@@ -49,24 +46,25 @@ fi
 # Just in case
 rm -rf ~/.android/avd/$EMULATOR_NAME.avd
 
-avdmanager create avd -n $EMULATOR_NAME -k "$EMULATOR_PACKAGE" -d "pixel" --abi $EMULATOR_ABI
+$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd -n $EMULATOR_NAME -k "$EMULATOR_PACKAGE" -d "pixel" --abi $EMULATOR_ABI
 
 # Start adb server
 adb start-server
 
 # Start emulator
-$ANDROID_HOME/emulator/emulator -no-window -avd $EMULATOR_NAME -noaudio -port $EMULATOR_PORT -timezone America/Los_Angeles -partition-size 4000 > /dev/null &
+$ANDROID_HOME/emulator/emulator -no-window -avd $EMULATOR_NAME -noaudio -port $EMULATOR_PORT -timezone "PST" -partition-size 4000 > /dev/null &
 
-# Wait until enmulator actually started with timeout 60 sec
-timeout 120 adb -s emulator-$EMULATOR_PORT wait-for-any-device;
+# Wait until enmulator actually started
+adb -s emulator-$EMULATOR_PORT wait-for-any-device;
 
 # Clear logcat from previous sessions
-timeout 30 bash -c "adb logcat -c || true"
+bash -c "adb logcat -c || true"
 
 # Create reports folder
 mkdir -p .build/reports
 
 # Start write adb logcat to file
+mkdir -p .build/debug
 adb logcat | ndk-stack -sym .build/debug > .build/reports/ndk-stack.log &
 
 # Build
@@ -80,7 +78,7 @@ swift-test --deploy \
 swift-test --just-run | tee .build/reports/test.log
 return_code=${PIPESTATUS[0]}
 
-cat .build/reports/test.log | xcpretty --report junit --output .build/reports/junit.xml
+cat .build/reports/test.log | xcbeautify --report junit --report-path .build/reports
 
 cat .build/reports/ndk-stack.log
 

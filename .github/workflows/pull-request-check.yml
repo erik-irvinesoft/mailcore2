@@ -14,57 +14,57 @@ jobs:
 
   Android:
     name: "mailcore2 - Android"
-    runs-on: [self-hosted, macOS, ARM64, Android]
-    timeout-minutes: 60
-
+    runs-on: macos-13
+    
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-    - name: Run android tests
-      run: ./build-scripts/test-android.sh
+    - uses: actions/checkout@v4
+    - name: Select XCode 14.2
+      run: sudo xcode-select --switch /Applications/Xcode_14.2.app
+    - name: Install NDK
+      run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;25.2.9519653"
+    - name: Install Swift Android Toolchain
+      run: wget https://github.com/readdle/swift-android-toolchain/releases/latest/download/swift-android.zip;
+        unzip swift-android.zip;
+        swift-android/bin/swift-android tools --update;
+    - name: Install Android Emulator
+      run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "system-images;android-29;google_apis;x86_64"
+    - name: Run connected android tests
+      run: export ANDROID_NDK_ROOT_25C=$ANDROID_HOME/ndk/25.2.9519653;
+        export SWIFT_ANDROID_HOME_5_7=$(pwd)/swift-android;
+        ./build-scripts/test-android.sh
     - name: Publish Report
       uses: mikepenz/action-junit-report@v3
       if: failure()
       with:
         report_paths: .build/reports/junit.xml
-        check_name: mailcore2-android
+        check_name: mailcore2 - Android - Report
         detailed_summary: true
         include_passed: true
-        
-  macOS:
-    name: "mailcore2 - macOS"
-    runs-on: [self-hosted, macOS, ARM64, Android]
+
+  Darwin:
+    name: "mailcore2 - ${{ matrix.os }}"
+    runs-on: macos-latest
     timeout-minutes: 60
+
+    strategy:
+      matrix:
+        os: [macOS, iOS]
+        include:
+          - os: macOS
+            os_lowercased: macos
+          - os: iOS
+            os_lowercased: ios
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-    - name: Run android tests
-      run: ./build-scripts/test-macos.sh
+    - name: Run tests
+      run: ./build-scripts/test-${{ matrix.os_lowercased }}.sh
     - name: Publish Report
       uses: mikepenz/action-junit-report@v3
       if: failure()
       with:
         report_paths: .build/reports/junit.xml
-        check_name: mailcore2-macOS
-        detailed_summary: true
-        include_passed: true
-        
-  iOS:
-    name: "mailcore2 - iOS"
-    runs-on: [self-hosted, macOS, ARM64, Android]
-    timeout-minutes: 60
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-    - name: Run android tests
-      run: ./build-scripts/test-ios.sh
-    - name: Publish Report
-      uses: mikepenz/action-junit-report@v3
-      if: failure()
-      with:
-        report_paths: .build-ios/reports/junit.xml
-        check_name: mailcore2-iOS
+        check_name: mailcore2 - ${{ matrix.os }} - Report
         detailed_summary: true
         include_passed: true
