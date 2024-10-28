@@ -5,18 +5,18 @@
         "package": "ctemplate",
         "repositoryURL": "https://github.com/readdle/ctemplate.git",
         "state": {
-          "branch": "feature/spm-support",
-          "revision": "cfd6ddb896c0e452bcc51ed529305d699751f647",
-          "version": null
+          "branch": null,
+          "revision": "a56e2d43eb57dc1e132a96f0fd9e4df198d1c35b",
+          "version": "2.2.3-readdle.4"
         }
       },
       {
         "package": "etpan",
         "repositoryURL": "https://github.com/readdle/libetpan.git",
         "state": {
-          "branch": "feature/spm-support",
-          "revision": "30b661cfc6f5d334c9cfae24bd2c5f816c7f2db2",
-          "version": null
+          "branch": null,
+          "revision": "68a9583bb8022f75992e7ebb7956e8bd7197e867",
+          "version": "1.9.3-readdle.5"
         }
       },
       {
@@ -32,9 +32,9 @@
         "package": "RDHtml5Tidy",
         "repositoryURL": "https://github.com/readdle/tidy-html5.git",
         "state": {
-          "branch": "feature/spm-support",
-          "revision": "65128477fdbfd6554b90233a63302e3f89e67798",
-          "version": null
+          "branch": null,
+          "revision": "fa68a7e0ebdc4deab6de668c85a8d8ccf2fb5b19",
+          "version": "5.4.0-readdle.28"
         }
       }
     ]
