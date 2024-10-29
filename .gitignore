@@ -53,10 +53,10 @@ cocoapods-build
 *.aar
 .build
 .vs
-Package.resolved
-
 
 LinuxMain.swift
 third-party
 test.log
 junit.xml
+.build-ios
+ndk-stack.log

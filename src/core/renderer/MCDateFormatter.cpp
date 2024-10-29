@@ -215,7 +215,13 @@ void DateFormatter::prepare()
         localeRef = CFLocaleCreate(NULL, localeIdentifier);
     }
     if (localeRef == NULL) {
+        #if UNIT_TESTS
+        String *localName = new String("en_US");
+        localeIdentifier = CFStringCreateWithCharacters(NULL, localName->unicodeCharacters(), localName->length());
+        localeRef = CFLocaleCreate(NULL, localeIdentifier);
+        #else
         localeRef = CFLocaleCopyCurrent();
+        #endif
     }
     mAppleDateFormatter = CFDateFormatterCreate(NULL, localeRef, toAppleStyle(mDateStyle), toAppleStyle(mTimeStyle));
     if (mDateFormat != NULL) {

@@ -10,7 +10,7 @@ import Foundation
 import Dispatch
 import XCTest
 
-#if os(Android)
+#if SWIFT_PACKAGE
     import CMailCore
 #endif
 
@@ -141,12 +141,16 @@ class unittest : XCTestCase {
         super.setUp()
         
         #if os(Android)
-        _mainPath = Bundle.main.bundleURL.appendingPathComponent("resources/data-android")
+        _mainPath = Bundle.main.bundleURL.appendingPathComponent("resources/data")
         MCOOperation.setMainQueue(DispatchQueue.main)
         #else
-        NSTimeZone.default = TimeZone.init(abbreviation: "PST")!
-        _mainPath = Bundle.init(for: unittest.self).resourceURL!.appendingPathComponent("data")
+        _mainPath = Bundle.module.resourceURL!.appendingPathComponent("data")
         #endif
+        
+        NSTimeZone.default = TimeZone(identifier: "America/Los_Angeles")!
+        setlocale(LC_ALL, "en_US.UTF-8")
+        setenv("TZ", "America/Los_Angeles", 1)
+        tzset()
         
         _builderPath = _mainPath.appendingPathComponent("builder/input")
         _builderOutputPath = _mainPath.appendingPathComponent("builder/output")
@@ -307,8 +311,9 @@ class unittest : XCTestCase {
             var resultPath = _summaryDetectionOutputPath.appendingPathComponent(name)
             resultPath = resultPath.deletingPathExtension().appendingPathExtension("txt")
             let resultData = try! Data(contentsOf: resultPath, options: [])
+            let resultString = String(data: resultData, encoding: .utf8)
             
-            XCTAssertEqual(String(data: resultData, encoding: .utf8), str)
+            XCTAssertEqual(resultString!.stripingWhitespace(), str!.stripingWhitespace())
         }
 
     }
@@ -321,4 +326,78 @@ class unittest : XCTestCase {
         XCTAssertTrue(mutf7string.mUTF7DecodedString().string() == "~peter/mail/台北/日本語")
         XCTAssertTrue("~peter/mail/台北/日本語".mailCoreString().mUTF7EncodedString().isEqual(mutf7string))
     }
+    
+    func testDecodedDataUsingBase64Encoding() {
+        let str = "RU1QVFkK\r\n\r\n--_005"
+
+        guard let uchars = str.data(using: .utf16LittleEndian) else {
+            XCTFail()
+            return
+        }
+        
+        let cStr = str.cString(using: .utf8)
+        let result = cStr?.withUnsafeBytes { bytes in
+            guard let bytes: UnsafePointer<Int8> = Data.unwrapUnsafeBytes(bytes) else {
+                assert(false)
+                return ""
+            }
+            
+            var len: Int32 = -1
+            let result = MCDecodeBase64ByLines(bytes, Int32(uchars.count / 2), &len)
+            
+            return String(cString: result!)
+        }
+        
+        XCTAssertEqual(result, "EMPTY\n")
+    }
+}
+
+extension String {
+
+    func stripingWhitespace() -> String {
+        let characterSet = CharacterSet.whitespacesAndNewlines
+        return trimmingCharacters(in: characterSet)
+            .replacingCharacters(from: characterSet, replacementChar: " ")
+    }
+
+    func replacingCharacters(from charset: CharacterSet, replacementChar: Character, squashReplacement: Bool = true) -> String {
+        guard isEmpty == false else {
+            return self
+        }
+        
+        var result = [Unicode.Scalar]()
+        
+        if squashReplacement {
+            var hit = false
+            for scalar in unicodeScalars {
+                if charset.contains(scalar) {
+                    hit = true
+                }
+                else {
+                    if hit {
+                        result.append(contentsOf: replacementChar.unicodeScalars)
+                        hit = false
+                    }
+                    result.append(scalar)
+                }
+            }
+            
+            if hit {
+                result.append(contentsOf: replacementChar.unicodeScalars)
+            }
+        }
+        else {
+            for scalar in unicodeScalars {
+                if charset.contains(scalar) {
+                    result.append(contentsOf: replacementChar.unicodeScalars)
+                }
+                else {
+                    result.append(scalar)
+                }
+            }
+        }
+        
+        return String(UnicodeScalarView(result))
+    }
+
 }

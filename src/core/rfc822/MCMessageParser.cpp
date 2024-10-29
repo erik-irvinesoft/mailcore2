@@ -298,8 +298,6 @@ void MessageParser::saveToFile(mailcore::String *fileName) {
     HashMap* content = this->serializable();
     Data* data = JSON::objectToJSONData(content);
     data->writeToFile(fileName);
-    MC_SAFE_RELEASE(data);
-    MC_SAFE_RELEASE(content);
 }
 
 void MessageParser::recursiveSetupPartIDWithMultipart(mailcore::Multipart * part,
