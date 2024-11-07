@@ -123,9 +123,9 @@ public class MCOMessageBuilder : MCOAbstractMessage {
     }
     
     /** Store RFC 822 formatted message to file. */
-    public func writeToFile(filename: String) throws -> Bool {
+    public func writeToFile(filename: String, useAdditionalHeaders: Bool = false) throws -> Bool {
         return try mailCoreAutoreleasePool {
-            let code = nativeInstance.writeToFile(filename.mailCoreString())
+            let code = nativeInstance.writeToFile(filename.mailCoreString(), useAdditionalHeaders)
             if code != ErrorNone {
                 throw MailCoreError.error(code: code);
             }

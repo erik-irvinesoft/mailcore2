@@ -27,8 +27,8 @@ C_SYNTHESIZE_FUNC_WITH_OBJ(CData, data)
 C_SYNTHESIZE_FUNC_WITH_OBJ(CData, dataForEncryption)
 
 
-ErrorCode CMessageBuilder_writeToFile(struct CMessageBuilder self, MailCoreString filename) {
-    return static_cast<ErrorCode>((int)self.instance->writeToFile(filename.instance));
+ErrorCode CMessageBuilder_writeToFile(struct CMessageBuilder self, MailCoreString filename, bool useAdditionalHeaders) {
+    return static_cast<ErrorCode>((int)self.instance->writeToFile(filename.instance, useAdditionalHeaders));
 }
 
 C_SYNTHESIZE_FUNC_WITH_OBJ(CData, openPGPSignedMessageDataWithSignatureData, CData)
