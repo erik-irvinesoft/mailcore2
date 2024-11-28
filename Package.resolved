@@ -12,11 +12,11 @@
       },
       {
         "package": "etpan",
-        "repositoryURL": "https://github.com/readdle/libetpan.git",
+        "repositoryURL": "https://github.com/erik-irvinesoft/libetpan.git",
         "state": {
           "branch": null,
-          "revision": "cffec4289886e9bb2e33065aaaa06bfd950edac1",
-          "version": "1.9.3-readdle.6"
+          "revision": "1e4a73c0aaafe026b3de0cbfc3701e26260d1f81",
+          "version": null
         }
       },
       {

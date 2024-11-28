@@ -178,7 +178,7 @@ let products: [Product] = [
 ]
 
 let dependencies: [Package.Dependency] = [
-    .package(name: "libetpan", url: "https://github.com/readdle/libetpan.git", .exact("1.9.3-readdle.6")),
+    .package(name: "libetpan", url: "https://github.com/erik-irvinesoft/libetpan.git", .revision("1e4a73c0aaafe026b3de0cbfc3701e26260d1f81")),
     .package(name: "tidy-html5", url: "https://github.com/readdle/tidy-html5.git", .exact("5.4.0-readdle.28")),
     .package(name: "ctemplate", url: "https://github.com/readdle/ctemplate.git", .exact("2.2.3-readdle.4")),
     .package(name: "unicode", url: "https://github.com/readdle/swift-unicode", .exact("68.2.0"))
@@ -191,7 +191,7 @@ var targets: [Target] = [
             .product(name: "etpan", package: "libetpan"),
             .product(name: "RDHtml5Tidy", package: "tidy-html5"),
             .product(name: "ctemplate", package: "ctemplate"),
-            .product(name: "unicode", package: "unicode", condition: .when(platforms: [.iOS, .macOS])),
+            .product(name: "unicode", package: "unicode", condition: .when(platforms: [.iOS, .macOS, .macCatalyst])),
         ],
         path: "src",
         exclude: [
@@ -232,15 +232,15 @@ var targets: [Target] = [
             .headerSearchPath("c/utils"),
             .headerSearchPath("objc/utils"),
             .define("ANDROID", .when(platforms: [.android])),
-            .define("UCHAR_TYPE", to: "uint16_t", .when(platforms: [.macOS, .iOS])),
+            .define("UCHAR_TYPE", to: "uint16_t", .when(platforms: [.macOS, .iOS, .macCatalyst])),
             .unsafeFlags(["-Wno-module-import-in-extern-c"]),
             .unsafeFlags(["-fsigned-char"], .when(platforms: [.android])),
-            .unsafeFlags(["-fno-objc-arc"], .when(platforms: [.macOS, .iOS]))
+            .unsafeFlags(["-fno-objc-arc"], .when(platforms: [.macOS, .iOS, .macCatalyst]))
         ],
         linkerSettings: [
             .linkedLibrary("z"),
             .linkedLibrary("xml2"),
-            .linkedLibrary("resolv", .when(platforms: [.iOS, .macOS])),
+            .linkedLibrary("resolv", .when(platforms: [.iOS, .macOS, .macCatalyst])),
             .linkedLibrary("log", .when(platforms: [.android])),
             .linkedLibrary("icuuc.\(ICUVersion)", .when(platforms: [.android])),
             .linkedLibrary("icui18n.\(ICUVersion)", .when(platforms: [.android])),
